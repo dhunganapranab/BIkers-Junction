@@ -4,8 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 class CustomTextField extends StatelessWidget {
   final double? height;
   final double? width;
+  final double? fontSize;
   final int? maxLines;
   final String? hintText;
+  final TextStyle? hintStyle;
   final String? errorText;
   final TextInputType? keyboardType;
   final TextEditingController controller;
@@ -17,10 +19,12 @@ class CustomTextField extends StatelessWidget {
       this.width,
       this.maxLines,
       this.hintText,
+      this.hintStyle,
       this.errorText,
       this.keyboardType,
       required this.controller,
-      this.validator});
+      this.validator,
+      this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,7 @@ class CustomTextField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         validator: validator,
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.white, fontSize: fontSize ?? 16),
         cursorColor: Colors.white,
         maxLines: maxLines ?? 1,
         textInputAction: TextInputAction.done,
@@ -43,7 +47,7 @@ class CustomTextField extends StatelessWidget {
                 color: Colors.deepOrange,
                 fontFamily: GoogleFonts.montserrat().fontFamily,
                 fontWeight: FontWeight.bold),
-            hintStyle: const TextStyle(color: Colors.white70),
+            hintStyle: hintStyle ?? const TextStyle(color: Colors.white70),
             border: OutlineInputBorder(
                 borderSide: const BorderSide(
                     color: Colors.white), // Custom border color
@@ -55,8 +59,9 @@ class CustomTextField extends StatelessWidget {
 
 class Label1 extends StatelessWidget {
   final String labelName;
+  final double? fontSize;
 
-  const Label1({super.key, required this.labelName});
+  const Label1({super.key, required this.labelName, this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +71,7 @@ class Label1 extends StatelessWidget {
           color: Colors.white,
           fontWeight: FontWeight.bold,
           fontFamily: GoogleFonts.lato().fontFamily,
-          fontSize: 18),
+          fontSize: fontSize ?? 18),
     );
   }
 }

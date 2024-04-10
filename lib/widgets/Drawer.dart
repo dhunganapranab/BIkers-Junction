@@ -1,4 +1,5 @@
 import 'package:bikers_junction_app/providers/user_provider.dart';
+import 'package:bikers_junction_app/screens/myevents.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -92,14 +93,20 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                MyEvents(userID: user.id, role: user.role)));
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       border: Border.all(color: Colors.white, width: 1.0),
                     ),
                     child: const Center(
-                      child: Text("About us",
+                      child: Text("My Events",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,

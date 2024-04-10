@@ -1,3 +1,5 @@
+import 'package:bikers_junction_app/screens/event_chat.dart';
+import 'package:bikers_junction_app/screens/planRoute.dart';
 import 'package:bikers_junction_app/widgets/Appbar.dart';
 import 'package:bikers_junction_app/widgets/Buttons.dart';
 import 'package:bikers_junction_app/widgets/Card.dart';
@@ -85,7 +87,10 @@ class _MainEventState extends State<MainEvent> {
                           CardButton(
                               imagePath: 'assets/chatImage.png',
                               imageLabel: 'Group Chat',
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    EventChat.routeName, (route) => true);
+                              },
                               buttonText:
                                   "Chat with event\nmembers and discuss ride.",
                               colors: const [
@@ -96,7 +101,10 @@ class _MainEventState extends State<MainEvent> {
                           CardButton(
                               imagePath: 'assets/routeImage.png',
                               imageLabel: 'Route Details',
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    PlanRoute.routeName, (route) => true);
+                              },
                               buttonText: "See route details for trip.",
                               colors: const [
                                 Color.fromARGB(227, 58, 156, 148),

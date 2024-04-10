@@ -25,14 +25,15 @@ class EventService {
       required creatorID}) async {
     try {
       Event event = Event(
-          id: '',
-          eventName: eventName,
-          eventDescription: eventDescription,
-          allowedParticipants: allowedParticipants,
-          prerequisites: prerequisites,
-          eventDate: eventDate,
-          creatorName: creatorName,
-          creatorID: creatorID);
+        id: '',
+        eventName: eventName,
+        eventDescription: eventDescription,
+        allowedParticipants: allowedParticipants,
+        prerequisites: prerequisites,
+        eventDate: eventDate,
+        creatorName: creatorName,
+        creatorID: creatorID,
+      );
 
       http.Response res = await http.post(
         Uri.parse('$uri/api/events/createevent'),
@@ -79,6 +80,7 @@ class EventService {
       );
     } catch (e) {
       showSnackBar(context, e.toString());
+      print(e.toString());
     }
     return eventList;
   }
@@ -101,7 +103,37 @@ class EventService {
             Provider.of<EventProvider>(context, listen: false)
                 .setEvent(res.body);
             Navigator.pushNamedAndRemoveUntil(
-                context, EventPage.routeName, (route) => true);
+                context, MainEvent.routeName, (route) => true);
+          });
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  void createRoute(
+      {required BuildContext context,
+      required String routeName,
+      required String startPointCoordinates,
+      required String destinationPointCoordinates,
+      required String eventID}) async {
+    try {
+      http.Response res = await http.post(
+        Uri.parse('$uri/api/events/addRouteDetails/$eventID'),
+        body: jsonEncode({
+          'routeName': routeName,
+          'startPointCoordinates': startPointCoordinates,
+          'destinationPointCoordinates': destinationPointCoordinates,
+        }),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            showSnackBar(context, 'Route created successfully.');
+            Navigator.pushNamedAndRemoveUntil(
+                context, MainEvent.routeName, (route) => false);
           });
     } catch (e) {
       showSnackBar(context, e.toString());

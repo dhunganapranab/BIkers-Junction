@@ -3,8 +3,8 @@
         android:label="bikers_junction_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <!-- <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBWY43XU_ON4tp5isGL3DGIP5MUZh0V01U"/> -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDi2R7fm9CYo7Tfi4_bZANrSAaJqZ0oFOE"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

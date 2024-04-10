@@ -11,15 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class EventPage extends StatefulWidget {
+class EventDetails extends StatefulWidget {
   static const String routeName = '/eventDetails';
-  const EventPage({super.key});
+  const EventDetails({super.key});
 
   @override
-  State<EventPage> createState() => _EventPageState();
+  State<EventDetails> createState() => _EventDetailsState();
 }
 
-class _EventPageState extends State<EventPage> {
+class _EventDetailsState extends State<EventDetails> {
   final UserService userService = UserService();
 
   void _showJoinEventDialog(BuildContext context) {

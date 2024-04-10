@@ -1,8 +1,8 @@
-import 'package:bikers_junction_app/models/event.dart';
 import 'package:bikers_junction_app/screens/availableEvent.dart';
 import 'package:bikers_junction_app/screens/createEvent.dart';
 import 'package:bikers_junction_app/screens/event.dart';
 import 'package:bikers_junction_app/screens/eventDetails.dart';
+import 'package:bikers_junction_app/screens/event_chat.dart';
 import 'package:bikers_junction_app/screens/homeScreen.dart';
 import 'package:bikers_junction_app/screens/loginScreen.dart';
 import 'package:bikers_junction_app/screens/planRoute.dart';
@@ -26,11 +26,17 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
     case CreateEvent.routeName:
       return MaterialPageRoute(builder: (_) => const CreateEvent());
 
-    case EventPage.routeName:
-      return MaterialPageRoute(builder: (_) => const EventPage());
+    case EventDetails.routeName:
+      return MaterialPageRoute(builder: (_) => const EventDetails());
 
     case MainEvent.routeName:
       return MaterialPageRoute(builder: (_) => const MainEvent());
+
+    case EventChat.routeName:
+      return MaterialPageRoute(builder: (_) => const EventChat());
+
+    case PlanRoute.routeName:
+      return MaterialPageRoute(builder: (_) => const PlanRoute());
 
     default:
       return MaterialPageRoute(

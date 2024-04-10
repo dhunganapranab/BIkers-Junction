@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:bikers_junction_app/constants/error_handling.dart';
 import 'package:bikers_junction_app/constants/global_variables.dart';
 import 'package:bikers_junction_app/constants/utils.dart';
+import 'package:bikers_junction_app/models/event.dart';
 import 'package:bikers_junction_app/models/user.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/screens/createEvent.dart';
@@ -127,6 +128,7 @@ class UserService {
       await sharedPreferences.setString('userToken', '');
       Navigator.pushNamedAndRemoveUntil(
           context, Login.routeName, (route) => false);
+      showSnackBar(context, 'You have been logged out from the app.');
     } catch (e) {
       showSnackBar(context, e.toString());
     }
@@ -145,7 +147,7 @@ class UserService {
   void checkRoleParticipant(BuildContext context, String role, String name,
       String eventID, String email, String userID) {
     if (role == 'Event Participator') {
-      JoinEvent(
+      joinEvent(
           context: context,
           eventID: eventID,
           name: name,
@@ -157,7 +159,7 @@ class UserService {
     }
   }
 
-  void JoinEvent({
+  void joinEvent({
     required BuildContext context,
     required String eventID,
     required String name,
@@ -186,7 +188,65 @@ class UserService {
             print(res.body);
           });
     } catch (e) {
+      print(e);
       showSnackBar(context, e.toString());
     }
+  }
+
+  Future<List<Event>> getMyEvents(BuildContext context, String userID) async {
+    List<Event> eventList = [];
+    try {
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/user/$userID/myevent'),
+      );
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+            eventList.add(
+              Event.fromJson(
+                jsonEncode(
+                  jsonDecode(res.body)[i],
+                ),
+              ),
+            );
+          }
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return eventList;
+  }
+
+  Future<List<Event>> getCreatedEvents(
+      BuildContext context, String userID) async {
+    List<Event> eventList = [];
+    try {
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/user//createdEvent/$userID'),
+      );
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+            eventList.add(
+              Event.fromJson(
+                jsonEncode(
+                  jsonDecode(res.body)[i],
+                ),
+              ),
+            );
+          }
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return eventList;
   }
 }

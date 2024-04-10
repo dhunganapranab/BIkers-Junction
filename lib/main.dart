@@ -4,6 +4,7 @@ import 'package:bikers_junction_app/providers/search_places.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/screens/availableEvent.dart';
 import 'package:bikers_junction_app/screens/event.dart';
+import 'package:bikers_junction_app/screens/event_chat.dart';
 import 'package:bikers_junction_app/screens/homeScreen.dart';
 import 'package:bikers_junction_app/screens/loginScreen.dart';
 import 'package:bikers_junction_app/router.dart';
