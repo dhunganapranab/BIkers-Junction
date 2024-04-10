@@ -21,6 +21,8 @@ class _RegisterState extends State<Register> {
   final TextEditingController password = TextEditingController();
   final TextEditingController confirmPassword = TextEditingController();
   final TextEditingController birthYear = TextEditingController();
+  String? dropDownValue;
+  List listItem = ['Event Creator', 'Event Participator'];
 
   @override
   void dispose() {
@@ -38,6 +40,7 @@ class _RegisterState extends State<Register> {
         fullname: name.text,
         email: email.text,
         password: password.text,
+        role: dropDownValue.toString(),
         dateOfBirth: birthYear.text);
   }
 
@@ -236,6 +239,51 @@ class _RegisterState extends State<Register> {
                                           }
                                           return null;
                                         },
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text("Role:",
+                                              style: TextStyle(
+                                                  color: Colors.lightGreen,
+                                                  fontSize: 17)),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 100.0),
+                                            child: DropdownButton(
+                                              dropdownColor:
+                                                  const Color.fromARGB(
+                                                      255, 60, 68, 51),
+                                              style: const TextStyle(
+                                                  color: Colors.lightGreen,
+                                                  fontSize: 17),
+                                              hint: const Text(
+                                                "Select your role",
+                                                style: TextStyle(
+                                                    color: Colors.lightGreen,
+                                                    fontSize: 17),
+                                              ),
+                                              value: dropDownValue,
+                                              onChanged: (newValue) {
+                                                setState(() {
+                                                  dropDownValue =
+                                                      newValue.toString();
+                                                });
+                                              },
+                                              items: listItem.map((listItem) {
+                                                return DropdownMenuItem(
+                                                  value: listItem,
+                                                  child: Text(listItem),
+                                                );
+                                              }).toList(),
+                                              icon: const Icon(
+                                                  Icons.arrow_drop_down,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                       const SizedBox(height: 10),
                                       Padding(

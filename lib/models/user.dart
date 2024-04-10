@@ -6,6 +6,7 @@ class User {
   final String email;
   final String password;
   final String dateOfBirth;
+  final String role;
   final String token;
 
   User({
@@ -14,6 +15,7 @@ class User {
     required this.email,
     required this.password,
     required this.dateOfBirth,
+    required this.role,
     required this.token,
   });
 
@@ -24,6 +26,7 @@ class User {
       'email': email,
       'password': password,
       'dateOfBirth': dateOfBirth,
+      'role': role,
       'token': token
     };
   }
@@ -35,6 +38,7 @@ class User {
       email: map['email'] ?? '',
       password: map['password'] ?? '',
       dateOfBirth: map['dateOfBirth'] ?? '',
+      role: map['role'] ?? '',
       token: map['token'] ?? '',
     );
   }

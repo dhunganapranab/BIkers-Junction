@@ -73,6 +73,7 @@ class CustomDrawer extends StatelessWidget {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
+                const SizedBox(height: 10),
                 InkWell(
                   onTap: () {},
                   child: Container(

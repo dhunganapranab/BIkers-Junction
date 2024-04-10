@@ -1,14 +1,23 @@
+import 'package:bikers_junction_app/models/event.dart';
+import 'package:bikers_junction_app/providers/event_provider.dart';
+import 'package:bikers_junction_app/providers/search_places.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
+import 'package:bikers_junction_app/screens/availableEvent.dart';
+import 'package:bikers_junction_app/screens/event.dart';
 import 'package:bikers_junction_app/screens/homeScreen.dart';
 import 'package:bikers_junction_app/screens/loginScreen.dart';
 import 'package:bikers_junction_app/router.dart';
+import 'package:bikers_junction_app/screens/planRoute.dart';
 import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => EventProvider()),
     ChangeNotifierProvider(create: (context) => UserProvider()),
+    ChangeNotifierProvider<PlaceResultsProvider>(
+        create: (context) => PlaceResultsProvider())
   ], child: const MyApp()));
 }
 

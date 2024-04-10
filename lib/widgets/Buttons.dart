@@ -1,3 +1,5 @@
+import 'package:bikers_junction_app/widgets/Card.dart';
+import 'package:bikers_junction_app/widgets/Textfield.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -48,5 +50,67 @@ class CustomButton1 extends StatelessWidget {
         style: ElevatedButton.styleFrom(
             backgroundColor: color, minimumSize: const Size(125, 35)),
         child: buttonText);
+  }
+}
+
+class CardButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final double? width;
+  final String imagePath;
+  final String imageLabel;
+  final String buttonText;
+  final List<Color> colors;
+
+  const CardButton(
+      {super.key,
+      required this.onPressed,
+      this.width,
+      required this.imagePath,
+      required this.imageLabel,
+      required this.buttonText,
+      required this.colors});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        splashColor: Colors.white,
+        onTap: onPressed,
+        child: CustomCard(
+            width: width,
+            border: Border.all(
+                color: const Color.fromARGB(188, 230, 229, 221), width: 0.8),
+            colors: colors,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    Container(
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(imagePath), fit: BoxFit.fill),
+                            borderRadius: BorderRadius.circular(10)),
+                        width: 120,
+                        height: 90),
+                    Title1(
+                      titleName: imageLabel,
+                      fontSize: 20,
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 30.0),
+                  child: Title1(
+                    titleName: buttonText,
+                    fontSize: 17,
+                  ),
+                )
+              ],
+            )),
+      ),
+    );
   }
 }

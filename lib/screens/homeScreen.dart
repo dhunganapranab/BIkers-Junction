@@ -1,9 +1,11 @@
+import 'package:bikers_junction_app/screens/availableEvent.dart';
 import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:bikers_junction_app/widgets/Appbar.dart';
 import 'package:bikers_junction_app/widgets/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../providers/event_provider.dart';
 import '../providers/user_provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final UserService logout = UserService();
+    final UserService userService = UserService();
     final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 24, 22, 22),
@@ -26,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: CustomAppbar(
             buttonText: "logout",
             onPressed: () {
-              logout.logOut(context);
+              userService.logOut(context);
             },
           )),
       body: SingleChildScrollView(
@@ -146,8 +148,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: const EdgeInsets.only(left: 195.0),
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, 'available events');
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        AvailableEvents.routeName,
+                                        (route) => true);
                                   },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color.fromARGB(
@@ -207,7 +211,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 195.0),
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    userService.checkRoleCreator(
+                                        context, user.role, user.fullname);
+                                  },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor:
                                           const Color.fromARGB(255, 0, 255, 21),
