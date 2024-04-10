@@ -80,7 +80,6 @@ class EventService {
       );
     } catch (e) {
       showSnackBar(context, e.toString());
-      print(e.toString());
     }
     return eventList;
   }
