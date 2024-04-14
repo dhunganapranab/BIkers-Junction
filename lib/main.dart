@@ -1,5 +1,6 @@
 import 'package:bikers_junction_app/models/event.dart';
 import 'package:bikers_junction_app/providers/event_provider.dart';
+import 'package:bikers_junction_app/providers/route_provider.dart';
 import 'package:bikers_junction_app/providers/search_places.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/screens/availableEvent.dart';
@@ -17,6 +18,7 @@ void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => EventProvider()),
     ChangeNotifierProvider(create: (context) => UserProvider()),
+    ChangeNotifierProvider(create: (context) => RouteDetailProvider()),
     ChangeNotifierProvider<PlaceResultsProvider>(
         create: (context) => PlaceResultsProvider())
   ], child: const MyApp()));

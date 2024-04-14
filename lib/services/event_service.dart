@@ -6,7 +6,10 @@ import 'package:bikers_junction_app/constants/error_handling.dart';
 import 'package:bikers_junction_app/constants/global_variables.dart';
 import 'package:bikers_junction_app/constants/utils.dart';
 import 'package:bikers_junction_app/models/event.dart';
+import 'package:bikers_junction_app/models/members.dart';
+import 'package:bikers_junction_app/models/route_details.dart';
 import 'package:bikers_junction_app/providers/event_provider.dart';
+import 'package:bikers_junction_app/providers/route_provider.dart';
 import 'package:bikers_junction_app/screens/event.dart';
 import 'package:bikers_junction_app/screens/eventDetails.dart';
 import 'package:flutter/material.dart';
@@ -67,12 +70,32 @@ class EventService {
         response: res,
         context: context,
         onSuccess: () {
-          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+          List<dynamic> jsonData = jsonDecode(res.body);
+          for (int i = 0; i < jsonData.length; i++) {
+            Map<String, dynamic> eventData = jsonData[i];
+            RouteDetails? routeDetails;
+            if (eventData.containsKey('routeDetails')) {
+              routeDetails = RouteDetails(
+                routeName: eventData['routeDetails']['routeName'],
+                startPointCoordinates: eventData['routeDetails']
+                    ['startPointCoordinates'],
+                destinationPointCoordinates: eventData['routeDetails']
+                    ['destinationPointCoordinates'],
+              );
+            }
             eventList.add(
-              Event.fromJson(
-                jsonEncode(
-                  jsonDecode(res.body)[i],
-                ),
+              Event(
+                id: eventData['_id'],
+                eventName: eventData['eventName'],
+                eventDescription: eventData['eventDescription'],
+                allowedParticipants: eventData['allowedParticipants'],
+                prerequisites: eventData['prerequisites'],
+                eventDate: eventData['eventDate'],
+                creatorName: eventData['creatorName'],
+                creatorID: eventData['creatorID'],
+                routeDetail: routeDetails,
+                member: List<Member>.from(
+                    eventData['members']?.map((x) => Member.fromMap(x))),
               ),
             );
           }
@@ -84,7 +107,32 @@ class EventService {
     return eventList;
   }
 
-  void geteventData(
+  void geteventDetails(
+      {required BuildContext context, required String eventID}) async {
+    try {
+      http.Response res = await http.post(
+        Uri.parse('$uri/api/events/eventDetails'),
+        body: jsonEncode({
+          'eventID': eventID,
+        }),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () async {
+            Provider.of<EventProvider>(context, listen: false)
+                .setEvent(res.body);
+            Navigator.pushNamedAndRemoveUntil(
+                context, EventDetails.routeName, (route) => true);
+          });
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  void getmyeventDetails(
       {required BuildContext context, required String eventID}) async {
     try {
       http.Response res = await http.post(
@@ -133,6 +181,55 @@ class EventService {
             showSnackBar(context, 'Route created successfully.');
             Navigator.pushNamedAndRemoveUntil(
                 context, MainEvent.routeName, (route) => false);
+          });
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  Future<List<Member>> getMembers(BuildContext context, String eventID) async {
+    List<Member> members = [];
+    try {
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/events/$eventID/memberdetails'),
+      );
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+            members.add(
+              Member.fromJson(
+                jsonEncode(
+                  jsonDecode(res.body)[i],
+                ),
+              ),
+            );
+          }
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+      print(e.toString());
+    }
+    return members;
+  }
+
+  void getRouteDetails(
+      {required BuildContext context, required String eventID}) async {
+    try {
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/events/$eventID/routedetails'),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () async {
+            Provider.of<RouteDetailProvider>(context, listen: false)
+                .setRoute(res.body);
           });
     } catch (e) {
       showSnackBar(context, e.toString());

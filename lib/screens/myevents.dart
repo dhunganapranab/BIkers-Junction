@@ -45,7 +45,7 @@ class _MyEventsState extends State<MyEvents> {
   }
 
   void getEventData() {
-    eventService.geteventData(context: context, eventID: eventID);
+    eventService.getmyeventDetails(context: context, eventID: eventID);
   }
 
   @override

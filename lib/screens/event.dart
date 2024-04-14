@@ -1,5 +1,12 @@
+import 'package:bikers_junction_app/constants/utils.dart';
+import 'package:bikers_junction_app/models/route_details.dart';
+import 'package:bikers_junction_app/providers/route_provider.dart';
+import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/screens/event_chat.dart';
+import 'package:bikers_junction_app/screens/memberlist.dart';
 import 'package:bikers_junction_app/screens/planRoute.dart';
+import 'package:bikers_junction_app/screens/routeDetails.dart';
+import 'package:bikers_junction_app/services/event_service.dart';
 import 'package:bikers_junction_app/widgets/Appbar.dart';
 import 'package:bikers_junction_app/widgets/Buttons.dart';
 import 'package:bikers_junction_app/widgets/Card.dart';
@@ -20,9 +27,26 @@ class MainEvent extends StatefulWidget {
 }
 
 class _MainEventState extends State<MainEvent> {
+  EventService eventService = EventService();
+
+  @override
+  void initState() {
+    super.initState();
+    getRouteDetails();
+  }
+
+  void getRouteDetails() {
+    eventService.getRouteDetails(
+        context: context,
+        eventID: Provider.of<EventProvider>(context, listen: false).event.id
+            as String);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final route = Provider.of<RouteDetailProvider>(context).route;
     final event = Provider.of<EventProvider>(context).event;
+    final user = Provider.of<UserProvider>(context).user;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Container(
@@ -63,6 +87,28 @@ class _MainEventState extends State<MainEvent> {
                           const SizedBox(height: 30)
                         ],
                       )),
+                  user.role == "Event Creator"
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 220.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  PlanRoute.routeName, (route) => true);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromARGB(255, 7, 240, 27),
+                                minimumSize: const Size(150, 40)),
+                            child: const Text(
+                              "Plan or Edit Route",
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
                   CustomCard(
                       width: screenWidth,
                       height: screenHeight * 0.738,
@@ -75,7 +121,13 @@ class _MainEventState extends State<MainEvent> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           CardButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MembersListScreen(
+                                            eventID: event.id as String)));
+                              },
                               imagePath: 'assets/member.png',
                               imageLabel: 'Members',
                               buttonText:
@@ -88,8 +140,11 @@ class _MainEventState extends State<MainEvent> {
                               imagePath: 'assets/chatImage.png',
                               imageLabel: 'Group Chat',
                               onPressed: () {
-                                Navigator.pushNamedAndRemoveUntil(context,
-                                    EventChat.routeName, (route) => true);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EventChat(
+                                            eventID: event.id as String)));
                               },
                               buttonText:
                                   "Chat with event\nmembers and discuss ride.",
@@ -102,8 +157,19 @@ class _MainEventState extends State<MainEvent> {
                               imagePath: 'assets/routeImage.png',
                               imageLabel: 'Route Details',
                               onPressed: () {
-                                Navigator.pushNamedAndRemoveUntil(context,
-                                    PlanRoute.routeName, (route) => true);
+                                if (route.routeName == "") {
+                                  showSnackBar(context,
+                                      "Route details are not added by event organizer yet!!");
+                                } else {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => RouteDetailScreen(
+                                              startpoint:
+                                                  route.startPointCoordinates,
+                                              destination: route
+                                                  .destinationPointCoordinates)));
+                                }
                               },
                               buttonText: "See route details for trip.",
                               colors: const [

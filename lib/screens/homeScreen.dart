@@ -5,7 +5,6 @@ import 'package:bikers_junction_app/widgets/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../providers/event_provider.dart';
 import '../providers/user_provider.dart';
 
 class HomeScreen extends StatefulWidget {

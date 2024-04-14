@@ -87,8 +87,14 @@ class _PlanRouteState extends State<PlanRoute> {
     );
   }
 
-  gotoPlace(double lat, double lng, double endLat, double endLng,
-      Map<String, dynamic> boundsNe, Map<String, dynamic> boundsSw) async {
+  gotoPlace(
+    double lat,
+    double lng,
+    double endLat,
+    double endLng,
+    Map<String, dynamic> boundsNe,
+    Map<String, dynamic> boundsSw,
+  ) async {
     final GoogleMapController controller = await _controller.future;
 
     controller.animateCamera(CameraUpdate.newLatLngBounds(
@@ -108,6 +114,8 @@ class _PlanRouteState extends State<PlanRoute> {
         width: 10,
         color: Colors.blue,
         points: points.map((e) => LatLng(e.latitude, e.longitude)).toList()));
+
+    setState(() {});
   }
 
   @override
@@ -270,16 +278,16 @@ class _PlanRouteState extends State<PlanRoute> {
                               });
                               _initializeLocation();
                               _updateCameraPosition(sourcelocation);
-                              // var directions =
-                              //     await mapServices.getDirections(org, dst);
-                              // gotoPlace(
-                              //     directions['start_location']['lat'],
-                              //     directions['start_location']['lng'],
-                              //     directions['end_location']['lat'],
-                              //     directions['end_location']['lng'],
-                              //     directions['bounds_ne'],
-                              //     directions['bounds_sw']);
-                              // _setPolyline(directions['polyline_decoded']);
+                              var directions =
+                                  await mapServices.getDirections(org, dst);
+                              gotoPlace(
+                                  directions['start_location']['lat'],
+                                  directions['start_location']['lng'],
+                                  directions['end_location']['lat'],
+                                  directions['end_location']['lng'],
+                                  directions['bounds_ne'],
+                                  directions['bounds_sw']);
+                              _setPolyline(directions['polyline_decoded']);
                               showAreaBetweenMarkers();
                             },
                             buttonText: const Text(

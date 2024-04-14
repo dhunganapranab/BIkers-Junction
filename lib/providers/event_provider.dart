@@ -13,10 +13,9 @@ class EventProvider extends ChangeNotifier {
       creatorName: '',
       creatorID: '',
       routeDetail: RouteDetails(
-        routeName: '',
-        startPointCoordinates: '',
-        destinationPointCoordinates: '',
-      ),
+          routeName: '',
+          startPointCoordinates: '',
+          destinationPointCoordinates: ''),
       member: []);
 
   Event get event => _event;
