@@ -28,11 +28,6 @@ class ChatService {
             Message message =
                 Message.fromJson(jsonEncode(jsonDecode(res.body)[i]));
             messages.add(message);
-            messages.forEach((message) {
-              print(
-                'Message: ${message.message}, Sender: ${message.senderName},${message.senderID}',
-              );
-            });
           }
         },
       );

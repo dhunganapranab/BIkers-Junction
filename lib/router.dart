@@ -4,6 +4,7 @@ import 'package:bikers_junction_app/screens/event.dart';
 import 'package:bikers_junction_app/screens/eventDetails.dart';
 import 'package:bikers_junction_app/screens/event_chat.dart';
 import 'package:bikers_junction_app/screens/homeScreen.dart';
+import 'package:bikers_junction_app/screens/initiateEmergency.dart';
 import 'package:bikers_junction_app/screens/loginScreen.dart';
 import 'package:bikers_junction_app/screens/memberlist.dart';
 import 'package:bikers_junction_app/screens/planRoute.dart';
@@ -36,6 +37,8 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
     case PlanRoute.routeName:
       return MaterialPageRoute(builder: (_) => const PlanRoute());
 
+    case EmergencyDetailsScreen.routeName:
+      return MaterialPageRoute(builder: (_) => const EmergencyDetailsScreen());
     default:
       return MaterialPageRoute(
           builder: (_) => const Scaffold(

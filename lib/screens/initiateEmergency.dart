@@ -1,30 +1,29 @@
 import 'dart:async';
 import 'package:bikers_junction_app/constants/global_variables.dart';
+import 'package:bikers_junction_app/providers/emergency_provider.dart';
 import 'package:bikers_junction_app/services/map_services.dart';
 import 'package:bikers_junction_app/widgets/Appbar.dart';
 import 'package:bikers_junction_app/widgets/Card.dart';
 import 'package:bikers_junction_app/widgets/Drawer.dart';
 import 'package:bikers_junction_app/widgets/Textfield.dart';
-import 'package:bikers_junction_app/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class InitiateEmergencyScreen extends StatefulWidget {
+class EmergencyDetailsScreen extends StatefulWidget {
   static const String routeName = "/emergencyScreen";
-  const InitiateEmergencyScreen({super.key});
+  const EmergencyDetailsScreen({super.key});
 
   @override
-  State<InitiateEmergencyScreen> createState() =>
-      _InitiateEmergencyScreenState();
+  State<EmergencyDetailsScreen> createState() => _EmergencyDetailsScreenState();
 }
 
-class _InitiateEmergencyScreenState extends State<InitiateEmergencyScreen> {
+class _EmergencyDetailsScreenState extends State<EmergencyDetailsScreen> {
   GoogleMapController? mapController;
   MapServices mapservices = MapServices();
+  String location = "";
   double lat = 0.0, long = 0.0;
-  late Timer _timer;
 
   LatLng sourcelocation = const LatLng(0.0, 0.0);
 
@@ -39,37 +38,23 @@ class _InitiateEmergencyScreenState extends State<InitiateEmergencyScreen> {
     );
   }
 
-  void _getCurrentLocation() {
-    mapservices.getCurrentLocation().then((value) {
-      setState(() {
-        lat = value.latitude;
-        long = value.longitude;
-        sourcelocation = LatLng(lat, long);
-        _updateCameraPosition(sourcelocation);
-        mapController!.showMarkerInfoWindow(const MarkerId('marker1'));
-      });
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
-    // Set up a timer to fetch location updates every 0 seconds
-    _timer = Timer.periodic(const Duration(seconds: 0), (Timer timer) {
-      _getCurrentLocation();
+    location = Provider.of<EmergencyProvider>(context, listen: false)
+        .emergency
+        .userLocation;
+    setState(() {
+      lat = double.parse(location.split(",")[0].trim());
+      long = double.parse(location.split(",")[1].trim());
+      sourcelocation = LatLng(lat, long);
+      _updateCameraPosition(sourcelocation);
     });
-  }
-
-  @override
-  void dispose() {
-    // Dispose the timer when the widget is disposed to prevent memory leaks
-    _timer.cancel();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final emergency = Provider.of<EmergencyProvider>(context).emergency;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Container(
@@ -152,53 +137,52 @@ class _InitiateEmergencyScreenState extends State<InitiateEmergencyScreen> {
                             ),
                           ]),
                         ),
-                        lat == 0.0 && long == 0.0
-                            ? SizedBox(
-                                width: screenWidth,
-                                height: screenHeight * 0.234,
-                                child: const Card(
-                                    color: Color.fromARGB(164, 47, 218, 24),
-                                    child: Loader1()),
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: SizedBox(
-                                    width: screenWidth,
-                                    height: screenHeight * 0.234,
-                                    child: Card(
-                                      color: const Color.fromARGB(
-                                          164, 47, 218, 24),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Title1(
-                                              titleName:
-                                                  "Emergency initiated in  this location: $lat,$long",
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Title1(
-                                              titleName: "Initiated by: userID",
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Title1(
-                                              titleName:
-                                                  "Messsage: hdhdhd dhdh dhd dh dhddhdhd ",
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: SizedBox(
+                              width: screenWidth,
+                              height: screenHeight * 0.234,
+                              child: Card(
+                                color: const Color.fromARGB(164, 47, 218, 24),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Title1(
+                                        titleName:
+                                            "Emergency initiated in  this location: ${emergency.userLocation}",
+                                        fontSize: 14,
                                       ),
-                                    )),
-                              )
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Title1(
+                                        titleName:
+                                            "Messsage: ${emergency.message} ",
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Title1(
+                                        titleName:
+                                            "Initiated by: ${emergency.userName}",
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Title1(
+                                        titleName:
+                                            "Initiator ID: ${emergency.userID.substring(0, 7)}",
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        )
                       ],
                     )),
               ],

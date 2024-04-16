@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:bikers_junction_app/constants/utils.dart';
 import 'package:bikers_junction_app/providers/route_provider.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
+import 'package:bikers_junction_app/screens/emergenciesList.dart';
 import 'package:bikers_junction_app/screens/event_chat.dart';
+import 'package:bikers_junction_app/screens/initiateEmergency.dart';
 import 'package:bikers_junction_app/screens/memberlist.dart';
 import 'package:bikers_junction_app/screens/planRoute.dart';
 import 'package:bikers_junction_app/screens/routeDetails.dart';
 import 'package:bikers_junction_app/services/event_service.dart';
 import 'package:bikers_junction_app/services/map_services.dart';
+import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:bikers_junction_app/widgets/Appbar.dart';
 import 'package:bikers_junction_app/widgets/Buttons.dart';
 import 'package:bikers_junction_app/widgets/Card.dart';
@@ -16,24 +19,31 @@ import 'package:bikers_junction_app/widgets/Drawer.dart';
 import 'package:bikers_junction_app/widgets/Textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/event_provider.dart';
 
 class MainEvent extends StatefulWidget {
   static const String routeName = "/eventScreen";
-  const MainEvent({super.key});
+  const MainEvent({Key? key}) : super(key: key);
 
   @override
   State<MainEvent> createState() => _MainEventState();
 }
 
 class _MainEventState extends State<MainEvent> {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController message = TextEditingController();
   EventService eventService = EventService();
+  UserService userService = UserService();
   MapServices mapservices = MapServices();
   double lat = 0.0, long = 0.0;
+  String location = "";
+  String userID = "";
+  String eventID = "";
+  String userName = "";
+  String time = DateFormat('yyyy-MM-dd , HH:mm').format(DateTime.now());
 
   @override
   void initState() {
@@ -48,59 +58,44 @@ class _MainEventState extends State<MainEvent> {
             as String);
   }
 
-  void _getCurrentLocation() {
+  void initiateEmergency(String eventID, String userName, String userID,
+      String userLocation, String message, String time) {
+    userService.initiateEmergency(
+        context: context,
+        eventID: eventID,
+        userName: userName,
+        userID: userID,
+        userLocation: userLocation,
+        message: message,
+        time: time);
+  }
+
+  void _getCurrentLocationAndShowDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing dialog by tapping outside
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0, // Remove shadow
+          content: Center(
+            child: CircularProgressIndicator(
+              color: Color.fromARGB(255, 156, 156, 156),
+            ), // Show a CircularProgressIndicator as a loader
+          ),
+        );
+      },
+    );
+
     mapservices.getCurrentLocation().then((value) {
       setState(() {
         lat = value.latitude;
         long = value.longitude;
       });
+      Navigator.of(context).pop(); // Dismiss the loader dialog
+      _showInitiateEmergencyDialog(
+          context); // Show the dialog after updating lat and long
     });
-  }
-
-  void showMessageDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: const Color.fromARGB(204, 8, 19, 17),
-          title: const Title1(
-            titleName: "Emergency Message",
-            fontSize: 18,
-            color: Colors.redAccent,
-          ),
-          content: CustomTextField(
-            controller: message,
-            key: _formKey,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return "field cannot be empty!!!";
-              }
-              return null;
-            },
-            hintText: "Enter your message",
-          ),
-          actions: [
-            CustomButton(
-              width: 100,
-              buttonText:
-                  const Text("cancel", style: TextStyle(color: Colors.white)),
-              color: Colors.red,
-              onPressed: () {
-                Navigator.of(context).pop();
-                message.clear(); // Closes the dialog
-              },
-            ),
-            CustomButton(
-              width: 100,
-              buttonText:
-                  const Text("Submit", style: TextStyle(color: Colors.white)),
-              color: const Color.fromARGB(255, 1, 255, 1),
-              onPressed: () {},
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void _showInitiateEmergencyDialog(BuildContext context) {
@@ -122,50 +117,31 @@ class _MainEventState extends State<MainEvent> {
             child: Column(
               children: [
                 SizedBox(
-                  child: lat == 0.0 && long == 0.0
-                      ? const Column(
-                          children: [
-                            Title1(
-                              titleName:
-                                  "Please Wait !!\nGetting your current Location...",
-                              fontSize: 14,
-                            ),
-                            SizedBox(height: 10),
-                            SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Color.fromARGB(255, 72, 255, 0),
-                                ),
-                              ),
-                            )
-                          ],
-                        )
-                      : SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              const Title1(
-                                titleName: "Your current Location:",
-                                fontSize: 15,
-                              ),
-                              const SizedBox(width: 10),
-                              Title1(
-                                titleName: "$lat,$long",
-                                fontSize: 15,
-                              )
-                            ],
-                          ),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        const Title1(
+                          titleName: "Your current Location:",
+                          fontSize: 15,
                         ),
+                        const SizedBox(width: 10),
+                        Title1(
+                          titleName: "$lat,$long",
+                          fontSize: 15,
+                        )
+                      ],
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
-                const Title1(
-                  titleName: "Do you really want to initiate emergency??",
-                  color: Color.fromARGB(255, 255, 0, 55),
-                  fontSize: 17,
-                )
+                lat == 0.0 && long == 0.0
+                    ? const SizedBox()
+                    : const Title1(
+                        titleName: "Do you really want to initiate emergency??",
+                        color: Color.fromARGB(255, 255, 0, 55),
+                        fontSize: 17,
+                      )
               ],
             ),
           ),
@@ -188,11 +164,68 @@ class _MainEventState extends State<MainEvent> {
                         style: TextStyle(color: Colors.white)),
                     color: const Color.fromARGB(255, 54, 120, 244),
                     onPressed: () {
-                      showMessageDialog(context);
+                      Navigator.of(context).pop(); // Close current dialog
+                      _showMessageDialog(context);
+                      setState(() {
+                        location = "$lat,$long";
+                      });
                     },
                   ),
                 ],
               ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void _showMessageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color.fromARGB(204, 8, 19, 17),
+          title: const Title1(
+            titleName: "Emergency Message",
+            fontSize: 18,
+            color: Colors.redAccent,
+          ),
+          content: Form(
+            key: formKey,
+            child: CustomTextField(
+              controller: message,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "field cannot be empty!!!";
+                }
+                return null;
+              },
+              hintText: "Enter your message",
+            ),
+          ),
+          actions: [
+            CustomButton(
+              width: 100,
+              buttonText:
+                  const Text("cancel", style: TextStyle(color: Colors.white)),
+              color: Colors.red,
+              onPressed: () {
+                Navigator.of(context).pop(); // Closes the dialog
+              },
+            ),
+            CustomButton(
+              width: 100,
+              buttonText:
+                  const Text("Submit", style: TextStyle(color: Colors.white)),
+              color: const Color.fromARGB(255, 1, 255, 1),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  Navigator.of(context).pop();
+                  initiateEmergency(
+                      eventID, userName, userID, location, message.text, time);
+                }
+              },
             ),
           ],
         );
@@ -267,6 +300,30 @@ class _MainEventState extends State<MainEvent> {
                           ),
                         )
                       : const SizedBox(),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 220.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _getCurrentLocationAndShowDialog(context);
+                        setState(() {
+                          eventID = event.id as String;
+                          userID = user.id;
+                          userName = user.fullname;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 255, 123, 0),
+                          minimumSize: const Size(150, 40)),
+                      child: const Text(
+                        "Call Emergency!!!",
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 255, 255, 255),
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                   CustomCard(
                       width: screenWidth,
                       height: screenHeight * 0.738,
@@ -339,11 +396,14 @@ class _MainEventState extends State<MainEvent> {
                               imagePath: 'assets/emergency.png',
                               imageLabel: 'Emergency',
                               onPressed: () {
-                                // _getCurrentLocation();
-                                // _showInitiateEmergencyDialog(context);
-                                showMessageDialog(context);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EmergencyListScreen(
+                                                eventID: event.id as String)));
                               },
-                              buttonText: "Call emergency alert",
+                              buttonText: "See emergency Details",
                               colors: const [
                                 Color.fromARGB(228, 216, 62, 62),
                                 Color.fromARGB(178, 216, 62, 62),
@@ -354,25 +414,27 @@ class _MainEventState extends State<MainEvent> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 240.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, 'available events');
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 246, 24, 24),
-                          minimumSize: const Size(150, 40)),
-                      child: const Text(
-                        "Leave Event",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
+                  user.role == "Event Creator"
+                      ? const SizedBox()
+                      : Padding(
+                          padding: const EdgeInsets.only(right: 240.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'available events');
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromARGB(255, 246, 24, 24),
+                                minimumSize: const Size(150, 40)),
+                            child: const Text(
+                              "Leave Event",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        )
                 ],
               ),
             ),

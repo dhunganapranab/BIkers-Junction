@@ -5,13 +5,16 @@ import 'dart:convert';
 import 'package:bikers_junction_app/constants/error_handling.dart';
 import 'package:bikers_junction_app/constants/global_variables.dart';
 import 'package:bikers_junction_app/constants/utils.dart';
+import 'package:bikers_junction_app/models/emergency.dart';
 import 'package:bikers_junction_app/models/event.dart';
 import 'package:bikers_junction_app/models/members.dart';
 import 'package:bikers_junction_app/models/route_details.dart';
+import 'package:bikers_junction_app/providers/emergency_provider.dart';
 import 'package:bikers_junction_app/providers/event_provider.dart';
 import 'package:bikers_junction_app/providers/route_provider.dart';
 import 'package:bikers_junction_app/screens/event.dart';
 import 'package:bikers_junction_app/screens/eventDetails.dart';
+import 'package:bikers_junction_app/screens/initiateEmergency.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -230,6 +233,58 @@ class EventService {
           onSuccess: () async {
             Provider.of<RouteDetailProvider>(context, listen: false)
                 .setRoute(res.body);
+          });
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  Future<List<Emergency>> getEmergency(
+      BuildContext context, String eventID) async {
+    List<Emergency> emergencies = [];
+    try {
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/events/emergencies/$eventID'),
+      );
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+            emergencies.add(
+              Emergency.fromJson(
+                jsonEncode(
+                  jsonDecode(res.body)[i],
+                ),
+              ),
+            );
+          }
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+      print(e.toString());
+    }
+    return emergencies;
+  }
+
+  void getemergencyDetails(
+      {required BuildContext context, required String emergencyID}) async {
+    try {
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/events/emergencyDetail/$emergencyID'),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () async {
+            Provider.of<EmergencyProvider>(context, listen: false)
+                .setEmergency(res.body);
+            Navigator.pushNamedAndRemoveUntil(
+                context, EmergencyDetailsScreen.routeName, (route) => true);
           });
     } catch (e) {
       showSnackBar(context, e.toString());

@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:bikers_junction_app/constants/error_handling.dart';
 import 'package:bikers_junction_app/constants/global_variables.dart';
 import 'package:bikers_junction_app/constants/utils.dart';
+import 'package:bikers_junction_app/models/emergency.dart';
 import 'package:bikers_junction_app/models/event.dart';
 import 'package:bikers_junction_app/models/members.dart';
 import 'package:bikers_junction_app/models/route_details.dart';
@@ -290,5 +291,40 @@ class UserService {
       showSnackBar(context, e.toString());
     }
     return eventList;
+  }
+
+  void initiateEmergency(
+      {required BuildContext context,
+      required String eventID,
+      required String userName,
+      required String userID,
+      required String userLocation,
+      required String message,
+      required String time}) async {
+    try {
+      Emergency emergency = Emergency(
+          id: '',
+          eventID: eventID,
+          userName: userName,
+          userID: userID,
+          userLocation: userLocation,
+          message: message,
+          time: time);
+
+      http.Response res = await http.post(
+        Uri.parse('$uri/api/user/initiateEmergency'),
+        body: emergency.toJson(),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            showSnackBar(context, '$userName has initiated the emergency!!');
+          });
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
   }
 }
