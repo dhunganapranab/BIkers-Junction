@@ -35,3 +35,33 @@ class Loader extends StatelessWidget {
     );
   }
 }
+
+class Loader1 extends StatelessWidget {
+  const Loader1({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Padding(
+        padding: EdgeInsets.only(top: 50.0),
+        child: Center(
+          child: SizedBox(
+            child: Column(
+              children: [
+                CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+                SizedBox(height: 5),
+                Text(
+                  "Fetching Current Location",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

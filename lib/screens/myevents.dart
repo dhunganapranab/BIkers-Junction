@@ -156,9 +156,9 @@ class _MyEventsState extends State<MyEvents> {
                                                               "Event Name: ${eventData.eventName}",
                                                           fontSize: 16,
                                                         ),
-                                                        const Title1(
+                                                        Title1(
                                                           titleName:
-                                                              "Route: A to B",
+                                                              "Route: ${eventData.routeDetail?.routeName ?? " Not defined "}",
                                                           fontSize: 16,
                                                         ),
                                                         Title1(

@@ -79,15 +79,16 @@ class Label1 extends StatelessWidget {
 class Title1 extends StatelessWidget {
   final String titleName;
   final double? fontSize;
+  final Color? color;
 
-  const Title1({super.key, required this.titleName, this.fontSize});
+  const Title1({super.key, required this.titleName, this.fontSize, this.color});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       titleName,
       style: TextStyle(
-        color: Colors.white,
+        color: color ?? Colors.white,
         fontFamily: GoogleFonts.cabin().fontFamily,
         fontWeight: FontWeight.bold,
         fontSize: fontSize ?? 30,

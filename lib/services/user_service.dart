@@ -6,6 +6,8 @@ import 'package:bikers_junction_app/constants/error_handling.dart';
 import 'package:bikers_junction_app/constants/global_variables.dart';
 import 'package:bikers_junction_app/constants/utils.dart';
 import 'package:bikers_junction_app/models/event.dart';
+import 'package:bikers_junction_app/models/members.dart';
+import 'package:bikers_junction_app/models/route_details.dart';
 import 'package:bikers_junction_app/models/user.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/screens/createEvent.dart';
@@ -204,12 +206,32 @@ class UserService {
         response: res,
         context: context,
         onSuccess: () {
-          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+          List<dynamic> jsonData = jsonDecode(res.body);
+          for (int i = 0; i < jsonData.length; i++) {
+            Map<String, dynamic> eventData = jsonData[i];
+            RouteDetails? routeDetails;
+            if (eventData.containsKey('routeDetails')) {
+              routeDetails = RouteDetails(
+                routeName: eventData['routeDetails']['routeName'],
+                startPointCoordinates: eventData['routeDetails']
+                    ['startPointCoordinates'],
+                destinationPointCoordinates: eventData['routeDetails']
+                    ['destinationPointCoordinates'],
+              );
+            }
             eventList.add(
-              Event.fromJson(
-                jsonEncode(
-                  jsonDecode(res.body)[i],
-                ),
+              Event(
+                id: eventData['_id'],
+                eventName: eventData['eventName'],
+                eventDescription: eventData['eventDescription'],
+                allowedParticipants: eventData['allowedParticipants'],
+                prerequisites: eventData['prerequisites'],
+                eventDate: eventData['eventDate'],
+                creatorName: eventData['creatorName'],
+                creatorID: eventData['creatorID'],
+                routeDetail: routeDetails,
+                member: List<Member>.from(
+                    eventData['members']?.map((x) => Member.fromMap(x))),
               ),
             );
           }
@@ -233,12 +255,32 @@ class UserService {
         response: res,
         context: context,
         onSuccess: () {
-          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+          List<dynamic> jsonData = jsonDecode(res.body);
+          for (int i = 0; i < jsonData.length; i++) {
+            Map<String, dynamic> eventData = jsonData[i];
+            RouteDetails? routeDetails;
+            if (eventData.containsKey('routeDetails')) {
+              routeDetails = RouteDetails(
+                routeName: eventData['routeDetails']['routeName'],
+                startPointCoordinates: eventData['routeDetails']
+                    ['startPointCoordinates'],
+                destinationPointCoordinates: eventData['routeDetails']
+                    ['destinationPointCoordinates'],
+              );
+            }
             eventList.add(
-              Event.fromJson(
-                jsonEncode(
-                  jsonDecode(res.body)[i],
-                ),
+              Event(
+                id: eventData['_id'],
+                eventName: eventData['eventName'],
+                eventDescription: eventData['eventDescription'],
+                allowedParticipants: eventData['allowedParticipants'],
+                prerequisites: eventData['prerequisites'],
+                eventDate: eventData['eventDate'],
+                creatorName: eventData['creatorName'],
+                creatorID: eventData['creatorID'],
+                routeDetail: routeDetails,
+                member: List<Member>.from(
+                    eventData['members']?.map((x) => Member.fromMap(x))),
               ),
             );
           }

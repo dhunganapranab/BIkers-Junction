@@ -25,17 +25,12 @@ class ChatService {
         context: context,
         onSuccess: () {
           for (int i = 0; i < jsonDecode(res.body).length; i++) {
-            String userID = '6602ddebfd1978dec8616fa3';
             Message message =
                 Message.fromJson(jsonEncode(jsonDecode(res.body)[i]));
-
-            if (message.senderID != userID) {
-              // Add the message to the messages list only if the sender's ID is different
-              messages.add(message);
-            }
+            messages.add(message);
             messages.forEach((message) {
               print(
-                'Message: ${message.message}, Sender: ${message.senderName}, Type: ${message.type},${message.senderID}',
+                'Message: ${message.message}, Sender: ${message.senderName},${message.senderID}',
               );
             });
           }

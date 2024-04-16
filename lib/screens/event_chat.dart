@@ -26,6 +26,20 @@ class _EventChatState extends State<EventChat> {
   List<Message>? messages = [];
   late String userID = "";
 
+  @override
+  void initState() {
+    super.initState();
+    getMessageHistory();
+    connect();
+    userID = Provider.of<UserProvider>(context, listen: false).user.id;
+  }
+
+  @override
+  void dispose() {
+    socket.dispose(); // Dispose the socket connection
+    super.dispose();
+  }
+
   void connect() {
     try {
       socket = IO.io(uri, <String, dynamic>{
@@ -45,11 +59,10 @@ class _EventChatState extends State<EventChat> {
 
       socket.on('serverMsg', (msg) {
         print(msg);
-        if (msg['userID'] != userID) {
+        if (msg['userID'] != userID && mounted) {
           setState(() {
             messages!.add(Message(
                 message: msg['msg'],
-                type: msg['type'],
                 senderName: msg['senderName'],
                 senderID: msg['userID'],
                 time: DateFormat('HH:mm').format(DateTime.now())));
@@ -64,7 +77,6 @@ class _EventChatState extends State<EventChat> {
   void sendMsg(String msg, String senderName) {
     Message ownMsg = Message(
         message: msg,
-        type: 'ownMsg',
         senderName: senderName,
         senderID: userID,
         time: DateFormat('HH:mm').format(DateTime.now()));
@@ -74,32 +86,26 @@ class _EventChatState extends State<EventChat> {
     });
 
     socket.emit('sendMsg', {
-      'type': 'ownMsg',
       'msg': msg,
       'senderName': senderName,
       'userID': userID,
       'eventId': widget.eventID,
       'time': DateFormat('HH:mm').format(DateTime.now())
     });
+
+    messages!.forEach((message) {
+      print(
+        'Message: ${message.message}, Sender: ${message.senderName},${message.senderID}',
+      );
+    });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    // getMessageHistory();
-    connect();
-    userID = Provider.of<UserProvider>(context, listen: false).user.id;
+  getMessageHistory() async {
+    messages = await chatService.getchathistory(context, widget.eventID);
+    setState(() {
+      messages;
+    });
   }
-
-  // getMessageHistory() async {
-  //   messages = await chatService.getchathistory(context, widget.eventID);
-  //   setState(() {});
-  //   messages!.forEach((message) {
-  //     print(
-  //       'Message: ${message.message}, Sender: ${message.senderName}, Type: ${message.type},${message.senderID}',
-  //     );
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +131,7 @@ class _EventChatState extends State<EventChat> {
               child: ListView.builder(
                 itemCount: messages!.length,
                 itemBuilder: (context, index) {
-                  if (messages![index].type == "ownMsg") {
+                  if (messages![index].senderID == user.id) {
                     return OwnMsgWidget(
                       message: messages![index].message,
                       sendername: messages![index].senderName,

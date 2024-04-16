@@ -7,6 +7,7 @@ import 'package:bikers_junction_app/screens/availableEvent.dart';
 import 'package:bikers_junction_app/screens/event.dart';
 import 'package:bikers_junction_app/screens/event_chat.dart';
 import 'package:bikers_junction_app/screens/homeScreen.dart';
+import 'package:bikers_junction_app/screens/initiateEmergency.dart';
 import 'package:bikers_junction_app/screens/loginScreen.dart';
 import 'package:bikers_junction_app/router.dart';
 import 'package:bikers_junction_app/screens/planRoute.dart';
@@ -49,7 +50,7 @@ class _MyAppState extends State<MyApp> {
         ),
         onGenerateRoute: (settings) => generateRoute(settings),
         home: Provider.of<UserProvider>(context).user.token.isNotEmpty
-            ? const HomeScreen()
+            ? const MainEvent()
             : const Login());
   }
 }

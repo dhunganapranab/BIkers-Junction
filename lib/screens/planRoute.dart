@@ -33,7 +33,7 @@ class _PlanRouteState extends State<PlanRoute> {
   int polylineIdCounter = 1;
 
 //defining coordinates for map
-  double lat1 = 0.0, lat2 = 0.0, lat3 = 0.0, lat4 = 0.0;
+  double lat1 = 0.0, long1 = 0.0, lat2 = 0.0, long2 = 0.0;
   LatLng initialLocation = const LatLng(0.0, 0.0);
   LatLng sourcelocation = const LatLng(0.0, 0.0);
   LatLng destinationLocation = const LatLng(0.0, 0.0);
@@ -43,10 +43,10 @@ class _PlanRouteState extends State<PlanRoute> {
 
   void _initializeLocation() {
     setState(() {
-      sourcelocation = LatLng(lat1, lat2);
-      org = "$lat1,$lat2";
-      dst = "$lat3,$lat4";
-      destinationLocation = LatLng(lat3, lat4);
+      sourcelocation = LatLng(lat1, long1);
+      org = "$lat1,$long1";
+      dst = "$lat2,$long2";
+      destinationLocation = LatLng(lat2, long2);
     });
   }
 
@@ -268,13 +268,13 @@ class _PlanRouteState extends State<PlanRoute> {
                               setState(() {
                                 lat1 = double.parse(
                                     startpoint.text.split(",")[0].trim());
-                                lat2 = double.parse(
+                                long1 = double.parse(
                                     startpoint.text.split(",")[1].trim());
-                                lat3 = double.parse(
+                                lat2 = double.parse(
                                     destination.text.split(",")[0].trim());
-                                lat4 = double.parse(
+                                long2 = double.parse(
                                     destination.text.split(",")[1].trim());
-                                initialLocation = LatLng(lat1, lat2);
+                                initialLocation = LatLng(lat1, long1);
                               });
                               _initializeLocation();
                               _updateCameraPosition(sourcelocation);
