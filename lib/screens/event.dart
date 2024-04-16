@@ -416,25 +416,40 @@ class _MainEventState extends State<MainEvent> {
                   ),
                   user.role == "Event Creator"
                       ? const SizedBox()
-                      : Padding(
-                          padding: const EdgeInsets.only(right: 240.0),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, 'available events');
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color.fromARGB(255, 246, 24, 24),
-                                minimumSize: const Size(150, 40)),
-                            child: const Text(
-                              "Leave Event",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                      : ElevatedButton(
+                          onPressed: () {
+                            userService.leaveEvent(
+                                context: context,
+                                eventID: event.id as String,
+                                userID: user.id);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 246, 24, 24),
+                              minimumSize: const Size(150, 40)),
+                          child: const Text(
+                            "Leave Event",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
                           ),
-                        )
+                        ),
+                  const SizedBox(height: 5),
+                  CustomButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/availableEvents');
+                    },
+                    width: 250,
+                    height: 40,
+                    color: const Color.fromARGB(255, 135, 150, 0),
+                    buttonText: Text("Back",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: GoogleFonts.cabin().fontFamily,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold)),
+                  ),
                 ],
               ),
             ),

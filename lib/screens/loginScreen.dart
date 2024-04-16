@@ -200,7 +200,7 @@ class _LoginState extends State<Login> {
                                         Navigator.pushNamedAndRemoveUntil(
                                             context,
                                             Register.routeName,
-                                            (route) => false);
+                                            (route) => true);
                                       },
                                       child: Text(
                                         "Click here to sign up",

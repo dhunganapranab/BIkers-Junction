@@ -11,10 +11,12 @@ import 'package:bikers_junction_app/models/members.dart';
 import 'package:bikers_junction_app/models/route_details.dart';
 import 'package:bikers_junction_app/models/user.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
+import 'package:bikers_junction_app/screens/availableEvent.dart';
 import 'package:bikers_junction_app/screens/createEvent.dart';
 import 'package:bikers_junction_app/screens/event.dart';
 import 'package:bikers_junction_app/screens/homeScreen.dart';
 import 'package:bikers_junction_app/screens/loginScreen.dart';
+import 'package:bikers_junction_app/screens/userProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -124,6 +126,67 @@ class UserService {
     }
   }
 
+  void updateProfile(
+      {required BuildContext context,
+      required String userID,
+      required String name,
+      required String email,
+      required String dob}) async {
+    try {
+      http.Response res = await http.put(
+        Uri.parse('$uri/api/user/$userID/updateProfile'),
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+          'dob': dob,
+        }),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () async {
+            showSnackBar(
+                context, 'Your details have been updated sucessfully.');
+            Provider.of<UserProvider>(context, listen: false).setUser(res.body);
+          });
+    } catch (e) {
+      print(e);
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  void changePassword({
+    required BuildContext context,
+    required String userID,
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    try {
+      http.Response res = await http.put(
+        Uri.parse('$uri/api/user/$userID/changepassword'),
+        body: jsonEncode({
+          'oldPassword': oldPassword,
+          'newPassword': newPassword,
+        }),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () async {
+            showSnackBar(
+                context, 'Your password have been updated sucessfully.');
+            Navigator.pop(context);
+          });
+    } catch (e) {
+      print(e);
+      showSnackBar(context, e.toString());
+    }
+  }
+
   void logOut(BuildContext context) async {
     try {
       SharedPreferences sharedPreferences =
@@ -187,8 +250,36 @@ class UserService {
           onSuccess: () async {
             showSnackBar(context, 'You have joined the event successfully.');
             Navigator.pushNamedAndRemoveUntil(
-                context, MainEvent.routeName, (route) => false);
+                context, MainEvent.routeName, (route) => true);
             print(res.body);
+          });
+    } catch (e) {
+      print(e);
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  void leaveEvent({
+    required BuildContext context,
+    required String eventID,
+    required String userID,
+  }) async {
+    try {
+      http.Response res = await http.post(
+        Uri.parse('$uri/api/user/$eventID/leaveevent'),
+        body: jsonEncode({
+          'userID': userID,
+        }),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () async {
+            showSnackBar(context, 'You have left the event successfully.');
+            Navigator.pushNamedAndRemoveUntil(
+                context, AvailableEvents.routeName, (route) => false);
           });
     } catch (e) {
       print(e);

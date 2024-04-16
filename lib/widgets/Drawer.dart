@@ -1,5 +1,6 @@
 import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/screens/myevents.dart';
+import 'package:bikers_junction_app/screens/userProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -74,7 +75,6 @@ class CustomDrawer extends StatelessWidget {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
-                const SizedBox(height: 10),
                 InkWell(
                   onTap: () {},
                   child: Container(
@@ -83,6 +83,26 @@ class CustomDrawer extends StatelessWidget {
                         border: Border.all(color: Colors.white, width: 1.0)),
                     child: const Center(
                       child: Text("Home",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, UserProfile.routeName, (route) => true);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border.all(color: Colors.white, width: 1.0)),
+                    child: const Center(
+                      child: Text("Edit Profile",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,

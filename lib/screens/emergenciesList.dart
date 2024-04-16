@@ -39,7 +39,7 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
     final user = Provider.of<UserProvider>(context).user;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final double aspRatio = user.role == "Event Creator" ? 2.4 : 2.8;
+    final double aspRatio = user.role == "Event Creator" ? 2.4 : 2.4;
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
@@ -144,14 +144,17 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
                                                     emergencyData.id as String);
                                           },
                                         ),
-                                        CustomButton(
-                                          buttonText: const Text("Dismiss",
-                                              style: TextStyle(
-                                                  color: Colors.white)),
-                                          color: const Color.fromARGB(
-                                              115, 255, 1, 1),
-                                          onPressed: () {},
-                                        ),
+                                        user.role == "Event Creator"
+                                            ? CustomButton(
+                                                buttonText: const Text(
+                                                    "Dismiss",
+                                                    style: TextStyle(
+                                                        color: Colors.white)),
+                                                color: const Color.fromARGB(
+                                                    115, 255, 1, 1),
+                                                onPressed: () {},
+                                              )
+                                            : const SizedBox()
                                       ],
                                     )
                                   ],

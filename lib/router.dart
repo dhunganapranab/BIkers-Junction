@@ -1,4 +1,5 @@
 import 'package:bikers_junction_app/screens/availableEvent.dart';
+import 'package:bikers_junction_app/screens/changePassword.dart';
 import 'package:bikers_junction_app/screens/createEvent.dart';
 import 'package:bikers_junction_app/screens/event.dart';
 import 'package:bikers_junction_app/screens/eventDetails.dart';
@@ -9,6 +10,7 @@ import 'package:bikers_junction_app/screens/loginScreen.dart';
 import 'package:bikers_junction_app/screens/memberlist.dart';
 import 'package:bikers_junction_app/screens/planRoute.dart';
 import 'package:bikers_junction_app/screens/registerScreen.dart';
+import 'package:bikers_junction_app/screens/userProfile.dart';
 import 'package:flutter/material.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
@@ -36,6 +38,12 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
 
     case PlanRoute.routeName:
       return MaterialPageRoute(builder: (_) => const PlanRoute());
+
+    case UserProfile.routeName:
+      return MaterialPageRoute(builder: (_) => const UserProfile());
+
+    case ChangePassword.routeName:
+      return MaterialPageRoute(builder: (_) => const ChangePassword());
 
     case EmergencyDetailsScreen.routeName:
       return MaterialPageRoute(builder: (_) => const EmergencyDetailsScreen());

@@ -6,6 +6,7 @@ import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/screens/homeScreen.dart';
 import 'package:bikers_junction_app/screens/loginScreen.dart';
 import 'package:bikers_junction_app/router.dart';
+import 'package:bikers_junction_app/screens/userProfile.dart';
 import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -6,6 +6,7 @@ class CustomTextField extends StatelessWidget {
   final double? width;
   final double? fontSize;
   final int? maxLines;
+  final int? maxLength;
   final String? hintText;
   final TextStyle? hintStyle;
   final String? errorText;
@@ -24,7 +25,8 @@ class CustomTextField extends StatelessWidget {
       this.keyboardType,
       required this.controller,
       this.validator,
-      this.fontSize});
+      this.fontSize,
+      this.maxLength});
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class CustomTextField extends StatelessWidget {
         maxLines: maxLines ?? 1,
         textInputAction: TextInputAction.done,
         keyboardType: keyboardType ?? TextInputType.text,
+        maxLength: maxLength,
         decoration: InputDecoration(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
