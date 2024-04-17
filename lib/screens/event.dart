@@ -5,7 +5,6 @@ import 'package:bikers_junction_app/providers/route_provider.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/screens/emergenciesList.dart';
 import 'package:bikers_junction_app/screens/event_chat.dart';
-import 'package:bikers_junction_app/screens/initiateEmergency.dart';
 import 'package:bikers_junction_app/screens/memberlist.dart';
 import 'package:bikers_junction_app/screens/planRoute.dart';
 import 'package:bikers_junction_app/screens/routeDetails.dart';
@@ -21,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../providers/event_provider.dart';
 
 class MainEvent extends StatefulWidget {
@@ -246,9 +244,9 @@ class _MainEventState extends State<MainEvent> {
               image: AssetImage('assets/bg3.png'), fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: CustomAppbar(buttonText: "logout", onPressed: () {})),
+        appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: CustomAppbar()),
         body: Scrollbar(
           child: SingleChildScrollView(
             child: Padding(
@@ -414,6 +412,34 @@ class _MainEventState extends State<MainEvent> {
                   const SizedBox(
                     height: 10,
                   ),
+                  CustomCard(
+                    colors: const [
+                      Color.fromARGB(172, 0, 0, 0),
+                      Color.fromARGB(146, 0, 0, 0)
+                    ],
+                    child: Column(
+                      children: [
+                        const Text(
+                          "If you want to provide rating and review to the event?",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        CustomButton(
+                            onPressed: () {},
+                            width: screenWidth * 0.5,
+                            color: const Color.fromARGB(255, 255, 147, 7),
+                            buttonText: const Text(
+                              "Click here!!",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  fontWeight: FontWeight.bold),
+                            )),
+                      ],
+                    ),
+                  ),
                   user.role == "Event Creator"
                       ? const SizedBox()
                       : ElevatedButton(
@@ -438,7 +464,7 @@ class _MainEventState extends State<MainEvent> {
                   const SizedBox(height: 5),
                   CustomButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/availableEvents');
+                      Navigator.pop(context);
                     },
                     width: 250,
                     height: 40,

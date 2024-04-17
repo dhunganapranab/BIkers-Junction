@@ -56,14 +56,9 @@ class _CreateEventState extends State<CreateEvent> {
               image: AssetImage('assets/bg2.png'), fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: CustomAppbar(
-              buttonText: "logout",
-              onPressed: () {
-                userService.logOut(context);
-              },
-            )),
+        appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: CustomAppbar()),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 70.0),

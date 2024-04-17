@@ -42,12 +42,9 @@ class _UserProfileState extends State<UserProfile> {
               image: AssetImage('assets/bg5.jpg'), fit: BoxFit.fill)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: CustomAppbar(
-              buttonText: "logout",
-              onPressed: () {},
-            )),
+        appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: CustomAppbar()),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),

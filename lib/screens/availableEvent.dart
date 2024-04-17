@@ -1,4 +1,5 @@
 import 'package:bikers_junction_app/models/event.dart';
+import 'package:bikers_junction_app/screens/homeScreen.dart';
 import 'package:bikers_junction_app/services/event_service.dart';
 import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:bikers_junction_app/widgets/Appbar.dart';
@@ -41,14 +42,9 @@ class _AvailableEventsState extends State<AvailableEvents> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 24, 22, 22),
-      appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: CustomAppbar(
-            buttonText: "logout",
-            onPressed: () {
-              Navigator.pushNamed(context, 'logout');
-            },
-          )),
+      appBar: const PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: CustomAppbar()),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -69,7 +65,7 @@ class _AvailableEventsState extends State<AvailableEvents> {
                       fontFamily: GoogleFonts.aBeeZee().fontFamily,
                     )),
               ),
-              events == null
+              events == null || events!.isEmpty
                   ? const Loader()
                   : Expanded(
                       child: Padding(
@@ -86,9 +82,11 @@ class _AvailableEventsState extends State<AvailableEvents> {
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 1,
-                                      childAspectRatio: 3.6 / 4),
+                                      childAspectRatio: 3.3 / 4),
                               itemBuilder: (context, index) {
                                 final eventData = events![index];
+                                final averageRating =
+                                    eventData.calculateAverageRating();
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
@@ -155,6 +153,38 @@ class _AvailableEventsState extends State<AvailableEvents> {
                                                           "Organizer: ${eventData.creatorName}",
                                                       fontSize: 16,
                                                     ),
+                                                    const SizedBox(height: 5),
+                                                    Row(
+                                                      children: [
+                                                        const Title1(
+                                                          titleName:
+                                                              "Event Rating: ",
+                                                          fontSize: 16,
+                                                        ),
+                                                        Text(
+                                                          "★ ${averageRating != null ? averageRating.toStringAsFixed(1) : '  Not Rated!'} ★",
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: averageRating !=
+                                                                      null
+                                                                  ? const Color
+                                                                      .fromARGB(
+                                                                      255,
+                                                                      255,
+                                                                      255,
+                                                                      255)
+                                                                  : const Color
+                                                                      .fromARGB(
+                                                                      255,
+                                                                      255,
+                                                                      94,
+                                                                      0)),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -194,7 +224,8 @@ class _AvailableEventsState extends State<AvailableEvents> {
               const SizedBox(height: 25),
               CustomButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/');
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, HomeScreen.routeName, (route) => false);
                 },
                 width: 300,
                 height: 40,

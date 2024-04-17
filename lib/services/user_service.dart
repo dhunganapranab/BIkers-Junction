@@ -187,6 +187,45 @@ class UserService {
     }
   }
 
+  void sendResetPasswordEmail({
+    required BuildContext context,
+    required String email,
+  }) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Colors.white38,
+          ),
+        );
+      },
+    );
+
+    try {
+      http.Response res = await http.post(
+        Uri.parse('$uri/api/user/send-reset-pass-email'),
+        body: jsonEncode({'email': email}),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      Navigator.pop(context); // Dismiss the loader
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () async {
+            showSnackBar(context,
+                'Link for resetting password has been sent to your email.');
+            Navigator.pop(context); // Close the current screen
+            // Navigate to the desired page here
+          });
+    } catch (e) {
+      Navigator.pop(context); // Dismiss the loader
+      showSnackBar(context, e.toString());
+    }
+  }
+
   void logOut(BuildContext context) async {
     try {
       SharedPreferences sharedPreferences =

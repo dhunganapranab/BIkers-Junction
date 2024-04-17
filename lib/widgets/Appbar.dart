@@ -1,18 +1,15 @@
+import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:bikers_junction_app/widgets/Buttons.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppbar extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String buttonText;
-
   const CustomAppbar({
     super.key,
-    required this.onPressed,
-    required this.buttonText,
   });
 
   @override
   Widget build(BuildContext context) {
+    UserService userService = UserService();
     return AppBar(
       backgroundColor: Colors.black,
       title: const Center(
@@ -25,10 +22,12 @@ class CustomAppbar extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: CustomButton(
-                onPressed: onPressed,
-                buttonText: Text(
-                  buttonText,
-                  style: const TextStyle(
+                onPressed: () {
+                  userService.logOut(context);
+                },
+                buttonText: const Text(
+                  "logout",
+                  style: TextStyle(
                       color: Colors.white,
                       fontSize: 17,
                       fontWeight: FontWeight.bold),

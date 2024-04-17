@@ -27,14 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 24, 22, 22),
-      appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: CustomAppbar(
-            buttonText: "logout",
-            onPressed: () {
-              userService.logOut(context);
-            },
-          )),
+      appBar: const PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: CustomAppbar()),
       body: SingleChildScrollView(
         child: Column(
           children: [

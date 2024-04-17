@@ -143,12 +143,9 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(248, 50, 54, 26),
-      appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: CustomAppbar(
-            buttonText: "logout",
-            onPressed: () {},
-          )),
+      appBar: const PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: CustomAppbar()),
       body: SingleChildScrollView(
         child: Column(children: [
           const Padding(

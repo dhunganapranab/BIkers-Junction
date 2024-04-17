@@ -46,9 +46,9 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
               image: AssetImage('assets/bg3.png'), fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: CustomAppbar(buttonText: "logout", onPressed: () {})),
+        appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: CustomAppbar()),
         body: Padding(
           padding: const EdgeInsets.all(5.0),
           child: CustomCard(
@@ -71,7 +71,7 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
                       fontFamily: GoogleFonts.lato().fontFamily),
                 ),
                 const SizedBox(height: 10),
-                emergencies == null
+                emergencies == null || emergencies!.isEmpty
                     ? const Padding(
                         padding: EdgeInsets.only(top: 300.0),
                         child: Center(

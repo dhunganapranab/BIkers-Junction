@@ -3,6 +3,7 @@ import 'package:bikers_junction_app/providers/event_provider.dart';
 import 'package:bikers_junction_app/providers/route_provider.dart';
 import 'package:bikers_junction_app/providers/search_places.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
+import 'package:bikers_junction_app/screens/EventReviews.dart';
 import 'package:bikers_junction_app/screens/homeScreen.dart';
 import 'package:bikers_junction_app/screens/loginScreen.dart';
 import 'package:bikers_junction_app/router.dart';

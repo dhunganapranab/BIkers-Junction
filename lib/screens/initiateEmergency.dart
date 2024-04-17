@@ -63,9 +63,9 @@ class _EmergencyDetailsScreenState extends State<EmergencyDetailsScreen> {
               image: AssetImage('assets/bg3.png'), fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: CustomAppbar(buttonText: "logout", onPressed: () {})),
+        appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: CustomAppbar()),
         body: Scrollbar(
           child: SingleChildScrollView(
             child: Column(

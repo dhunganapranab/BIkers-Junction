@@ -116,15 +116,9 @@ class _EventChatState extends State<EventChat> {
               image: AssetImage('assets/bg4.png'), fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: CustomAppbar(
-            buttonText: "logout",
-            onPressed: () {
-              Navigator.pushNamed(context, 'logout');
-            },
-          ),
-        ),
+        appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: CustomAppbar()),
         body: Column(
           children: [
             Expanded(

@@ -7,6 +7,7 @@ import 'package:bikers_junction_app/constants/global_variables.dart';
 import 'package:bikers_junction_app/constants/utils.dart';
 import 'package:bikers_junction_app/models/emergency.dart';
 import 'package:bikers_junction_app/models/event.dart';
+import 'package:bikers_junction_app/models/eventRating.dart';
 import 'package:bikers_junction_app/models/members.dart';
 import 'package:bikers_junction_app/models/route_details.dart';
 import 'package:bikers_junction_app/providers/emergency_provider.dart';
@@ -88,18 +89,19 @@ class EventService {
             }
             eventList.add(
               Event(
-                id: eventData['_id'],
-                eventName: eventData['eventName'],
-                eventDescription: eventData['eventDescription'],
-                allowedParticipants: eventData['allowedParticipants'],
-                prerequisites: eventData['prerequisites'],
-                eventDate: eventData['eventDate'],
-                creatorName: eventData['creatorName'],
-                creatorID: eventData['creatorID'],
-                routeDetail: routeDetails,
-                member: List<Member>.from(
-                    eventData['members']?.map((x) => Member.fromMap(x))),
-              ),
+                  id: eventData['_id'],
+                  eventName: eventData['eventName'],
+                  eventDescription: eventData['eventDescription'],
+                  allowedParticipants: eventData['allowedParticipants'],
+                  prerequisites: eventData['prerequisites'],
+                  eventDate: eventData['eventDate'],
+                  creatorName: eventData['creatorName'],
+                  creatorID: eventData['creatorID'],
+                  routeDetail: routeDetails,
+                  member: List<Member>.from(
+                      eventData['members']?.map((x) => Member.fromMap(x))),
+                  ratings: List<Rating>.from(
+                      eventData['ratings'].map((x) => Rating.fromMap(x)))),
             );
           }
         },
@@ -289,5 +291,35 @@ class EventService {
     } catch (e) {
       showSnackBar(context, e.toString());
     }
+  }
+
+  Future<List<Rating>> getEventReviews(
+      BuildContext context, String eventID) async {
+    List<Rating> ratings = [];
+    try {
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/events/$eventID/ratings'),
+      );
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+            ratings.add(
+              Rating.fromJson(
+                jsonEncode(
+                  jsonDecode(res.body)[i],
+                ),
+              ),
+            );
+          }
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+      print(e.toString());
+    }
+    return ratings;
   }
 }

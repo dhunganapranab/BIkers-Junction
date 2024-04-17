@@ -52,14 +52,9 @@ class _MyEventsState extends State<MyEvents> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 24, 22, 22),
-      appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: CustomAppbar(
-            buttonText: "logout",
-            onPressed: () {
-              userService.logOut(context);
-            },
-          )),
+      appBar: const PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: CustomAppbar()),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -80,7 +75,7 @@ class _MyEventsState extends State<MyEvents> {
                       fontFamily: GoogleFonts.aBeeZee().fontFamily,
                     )),
               ),
-              events == null
+              events == null || events!.isEmpty
                   ? const Loader()
                   : Expanded(
                       child: Padding(

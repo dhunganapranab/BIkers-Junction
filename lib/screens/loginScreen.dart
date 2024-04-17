@@ -1,4 +1,5 @@
 import 'package:bikers_junction_app/screens/registerScreen.dart';
+import 'package:bikers_junction_app/screens/sendResetPasswordEmail.dart';
 import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -145,8 +146,11 @@ class _LoginState extends State<Login> {
                                     padding: const EdgeInsets.only(left: 120.0),
                                     child: TextButton(
                                       onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, "resetPassword");
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            SendResetPasswordEmailScreen
+                                                .routeName,
+                                            (route) => true);
                                       },
                                       child: const Text(
                                         "Forgot Password",

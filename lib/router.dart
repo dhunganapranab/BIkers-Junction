@@ -10,6 +10,7 @@ import 'package:bikers_junction_app/screens/loginScreen.dart';
 import 'package:bikers_junction_app/screens/memberlist.dart';
 import 'package:bikers_junction_app/screens/planRoute.dart';
 import 'package:bikers_junction_app/screens/registerScreen.dart';
+import 'package:bikers_junction_app/screens/sendResetPasswordEmail.dart';
 import 'package:bikers_junction_app/screens/userProfile.dart';
 import 'package:flutter/material.dart';
 
@@ -35,6 +36,10 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
 
     case MainEvent.routeName:
       return MaterialPageRoute(builder: (_) => const MainEvent());
+
+    case SendResetPasswordEmailScreen.routeName:
+      return MaterialPageRoute(
+          builder: (_) => const SendResetPasswordEmailScreen());
 
     case PlanRoute.routeName:
       return MaterialPageRoute(builder: (_) => const PlanRoute());
