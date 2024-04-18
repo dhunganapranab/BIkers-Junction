@@ -67,7 +67,10 @@ class _MyEventsState extends State<MyEvents> {
               Padding(
                 padding:
                     const EdgeInsets.only(right: 170.0, top: 10.0, bottom: 15),
-                child: Text("Your Joined Events",
+                child: Text(
+                    widget.role == "Event Creator"
+                        ? "Your Created Events"
+                        : "Your Joined Events",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

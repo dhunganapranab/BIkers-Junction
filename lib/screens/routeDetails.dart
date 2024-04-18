@@ -118,22 +118,22 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
     initialLocation = LatLng(lat1, lat2);
     _initializeLocation();
     _updateCameraPosition(sourcelocation);
-    // _fetchRouteDetails();
+    _fetchRouteDetails();
   }
 
-  // void _fetchRouteDetails() async {
-  //   var directions = await mapServices.getDirections(org, dst);
-  //   gotoPlace(
-  //     directions['start_location']['lat'],
-  //     directions['start_location']['lng'],
-  //     directions['end_location']['lat'],
-  //     directions['end_location']['lng'],
-  //     directions['bounds_ne'],
-  //     directions['bounds_sw'],
-  //   );
-  //   _setPolyline(directions['polyline_decoded']);
-  //   showAreaBetweenMarkers();
-  // }
+  void _fetchRouteDetails() async {
+    var directions = await mapServices.getDirections(org, dst);
+    gotoPlace(
+      directions['start_location']['lat'],
+      directions['start_location']['lng'],
+      directions['end_location']['lat'],
+      directions['end_location']['lng'],
+      directions['bounds_ne'],
+      directions['bounds_sw'],
+    );
+    _setPolyline(directions['polyline_decoded']);
+    showAreaBetweenMarkers();
+  }
 
   @override
   Widget build(BuildContext context) {

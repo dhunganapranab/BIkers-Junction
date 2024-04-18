@@ -33,6 +33,7 @@ class MainEvent extends StatefulWidget {
 class _MainEventState extends State<MainEvent> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController message = TextEditingController();
+  TextEditingController reviewMessage = TextEditingController();
   EventService eventService = EventService();
   UserService userService = UserService();
   MapServices mapservices = MapServices();
@@ -222,6 +223,119 @@ class _MainEventState extends State<MainEvent> {
                   Navigator.of(context).pop();
                   initiateEmergency(
                       eventID, userName, userID, location, message.text, time);
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showRatingDialog(BuildContext context) {
+    int? selectedRating;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color.fromARGB(204, 8, 19, 17),
+          title: const Title1(
+            titleName: "Provide Rating 😊 ",
+            fontSize: 18,
+            color: Color.fromARGB(255, 255, 255, 255),
+          ),
+          content: SizedBox(
+            height: 250,
+            child: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Title1(
+                      titleName: "Choose Rating from 1 to 5:",
+                      fontSize: 14,
+                    ),
+                    DropdownButtonFormField<int>(
+                      value: selectedRating,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedRating = value;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null) {
+                          return "Please select a rating!";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        border:
+                            OutlineInputBorder(), // Add border around the dropdown menu
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12), // Adjust padding
+                        hintText: "Select a rating",
+                        hintStyle:
+                            TextStyle(color: Colors.white), // Placeholder text
+                        filled: true, // Fill the background color
+                        fillColor: Color.fromARGB(
+                            181, 204, 195, 72), // Background color
+                      ),
+                      items: List.generate(
+                        5,
+                        (index) => DropdownMenuItem<int>(
+                          value: index + 1,
+                          child: Text((index + 1.0).toString()),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    CustomTextField(
+                      controller: reviewMessage,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Field cannot be empty!!!";
+                        }
+                        return null;
+                      },
+                      hintText: "Enter your Review 💬",
+                      maxLines: 4,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            CustomButton(
+              width: 100,
+              buttonText:
+                  const Text("Cancel", style: TextStyle(color: Colors.white)),
+              color: Colors.red,
+              onPressed: () {
+                Navigator.of(context).pop();
+                reviewMessage.clear(); // Closes the dialog
+              },
+            ),
+            CustomButton(
+              width: 100,
+              buttonText:
+                  const Text("Submit", style: TextStyle(color: Colors.white)),
+              color: const Color.fromARGB(255, 1, 255, 1),
+              onPressed: () {
+                if (formKey.currentState!.validate() &&
+                    selectedRating != null) {
+                  Navigator.of(context).pop();
+                  reviewMessage.clear();
+                  // Process the form data here
+                  userService.rateEvent(
+                      context: context,
+                      eventID: eventID,
+                      rating: selectedRating as int,
+                      message: reviewMessage.text,
+                      userName: userName,
+                      userID: userID);
                 }
               },
             ),
@@ -427,7 +541,14 @@ class _MainEventState extends State<MainEvent> {
                         ),
                         const SizedBox(height: 10),
                         CustomButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              _showRatingDialog(context);
+                              setState(() {
+                                eventID = event.id as String;
+                                userID = user.id;
+                                userName = user.fullname;
+                              });
+                            },
                             width: screenWidth * 0.5,
                             color: const Color.fromARGB(255, 255, 147, 7),
                             buttonText: const Text(

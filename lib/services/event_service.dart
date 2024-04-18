@@ -221,6 +221,28 @@ class EventService {
     return members;
   }
 
+  void kickMembers(
+      {required BuildContext context,
+      required String eventID,
+      required String memberID}) async {
+    try {
+      http.Response res = await http.delete(
+        Uri.parse('$uri/api/events/$eventID/kickmembers/$memberID'),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () async {
+            showSnackBar(
+                context, "You have kicked the ${memberID.substring(0, 7)}");
+          });
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
   void getRouteDetails(
       {required BuildContext context, required String eventID}) async {
     try {

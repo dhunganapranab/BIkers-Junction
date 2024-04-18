@@ -1,6 +1,7 @@
 import 'package:bikers_junction_app/models/emergency.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/services/event_service.dart';
+import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:bikers_junction_app/widgets/Appbar.dart';
 import 'package:bikers_junction_app/widgets/Buttons.dart';
 import 'package:bikers_junction_app/widgets/Card.dart';
@@ -21,6 +22,7 @@ class EmergencyListScreen extends StatefulWidget {
 
 class _EmergencyListScreenState extends State<EmergencyListScreen> {
   List<Emergency>? emergencies;
+  final UserService userService = UserService();
   final EventService eventService = EventService();
 
   @override
@@ -32,6 +34,13 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
   getEmergency() async {
     emergencies = await eventService.getEmergency(context, widget.eventID);
     setState(() {});
+  }
+
+  void dismissEmergency(String emergencyId) {
+    userService.dismissEmergency(context: context, emergencyID: emergencyId);
+    setState(() {
+      emergencies!.removeWhere((emergency) => emergency.id == emergencyId);
+    });
   }
 
   @override
@@ -152,7 +161,10 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
                                                         color: Colors.white)),
                                                 color: const Color.fromARGB(
                                                     115, 255, 1, 1),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  dismissEmergency(emergencyData
+                                                      .id as String);
+                                                },
                                               )
                                             : const SizedBox()
                                       ],

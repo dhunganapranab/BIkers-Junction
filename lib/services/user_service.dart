@@ -11,6 +11,7 @@ import 'package:bikers_junction_app/models/members.dart';
 import 'package:bikers_junction_app/models/route_details.dart';
 import 'package:bikers_junction_app/models/user.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
+import 'package:bikers_junction_app/screens/EventReviews.dart';
 import 'package:bikers_junction_app/screens/availableEvent.dart';
 import 'package:bikers_junction_app/screens/createEvent.dart';
 import 'package:bikers_junction_app/screens/event.dart';
@@ -454,6 +455,64 @@ class UserService {
             showSnackBar(context, '$userName has initiated the emergency!!');
           });
     } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  void dismissEmergency(
+      {required BuildContext context, required String emergencyID}) async {
+    try {
+      http.Response res = await http.delete(
+        Uri.parse('$uri/api/user/dismissEmergency/$emergencyID'),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () async {
+            showSnackBar(context,
+                "You have dismissed the emergency with id: ${emergencyID.substring(0, 7)}");
+          });
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  void rateEvent({
+    required BuildContext context,
+    required String eventID,
+    required int rating,
+    required String message,
+    required String userName,
+    required String userID,
+  }) async {
+    try {
+      http.Response res = await http.post(
+        Uri.parse('$uri/api/user/$eventID/rateEvent'),
+        body: jsonEncode({
+          'rating': rating,
+          'reviewMessage': message,
+          'userName': userName,
+          'userID': userID,
+        }),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () async {
+            showSnackBar(context,
+                'Your rating and review has been submitted sucessfully.');
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EventReviews(eventID: eventID)));
+            print(res.body);
+          });
+    } catch (e) {
+      print(e);
       showSnackBar(context, e.toString());
     }
   }

@@ -35,6 +35,8 @@ class _MembersListScreenState extends State<MembersListScreen> {
   }
 
   void removeMember(String memberId) {
+    eventService.kickMembers(
+        context: context, eventID: widget.eventID, memberID: memberId);
     setState(() {
       members!.removeWhere((member) => member.id == memberId);
     });
@@ -77,7 +79,7 @@ class _MembersListScreenState extends State<MembersListScreen> {
                       fontFamily: GoogleFonts.lato().fontFamily),
                 ),
                 const SizedBox(height: 10),
-                members == null
+                members == null || members!.isEmpty
                     ? const Padding(
                         padding: EdgeInsets.only(top: 300.0),
                         child: Center(
