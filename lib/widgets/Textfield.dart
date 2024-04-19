@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class CustomTextField extends StatelessWidget {
   final double? height;
   final double? width;
+  final bool? readonly;
   final double? fontSize;
   final int? maxLines;
   final int? maxLength;
@@ -17,6 +18,7 @@ class CustomTextField extends StatelessWidget {
   const CustomTextField(
       {super.key,
       this.height,
+      this.readonly,
       this.width,
       this.maxLines,
       this.hintText,
@@ -33,6 +35,7 @@ class CustomTextField extends StatelessWidget {
     return SizedBox(
       width: width,
       child: TextFormField(
+        readOnly: readonly ?? false,
         controller: controller,
         validator: validator,
         style: TextStyle(color: Colors.white, fontSize: fontSize ?? 16),

@@ -5,6 +5,7 @@ import 'package:bikers_junction_app/providers/route_provider.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/screens/emergenciesList.dart';
 import 'package:bikers_junction_app/screens/event_chat.dart';
+import 'package:bikers_junction_app/screens/homeScreen.dart';
 import 'package:bikers_junction_app/screens/memberlist.dart';
 import 'package:bikers_junction_app/screens/planRoute.dart';
 import 'package:bikers_junction_app/screens/routeDetails.dart';
@@ -24,8 +25,8 @@ import '../providers/event_provider.dart';
 
 class MainEvent extends StatefulWidget {
   static const String routeName = "/eventScreen";
-  const MainEvent({Key? key}) : super(key: key);
-
+  final bool? directedFromCreateEvent;
+  const MainEvent({super.key, this.directedFromCreateEvent});
   @override
   State<MainEvent> createState() => _MainEventState();
 }
@@ -356,253 +357,281 @@ class _MainEventState extends State<MainEvent> {
       decoration: const BoxDecoration(
           image: DecorationImage(
               image: AssetImage('assets/bg3.png'), fit: BoxFit.cover)),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: const PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight),
-            child: CustomAppbar()),
-        body: Scrollbar(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 10),
-                  CustomCard(
-                      width: screenWidth,
-                      colors: const [
-                        Color.fromARGB(100, 84, 183, 255),
-                        Color.fromARGB(50, 2, 2, 2),
-                      ],
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Title1(titleName: event.eventName),
-                          Text(
-                            event.eventDescription,
-                            maxLines: 10,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                fontFamily: GoogleFonts.lato().fontFamily),
-                          ),
-                          const SizedBox(height: 30)
+      // ignore: deprecated_member_use
+      child: WillPopScope(
+        onWillPop: () async {
+          if (widget.directedFromCreateEvent == true) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, HomeScreen.routeName, (route) => false);
+            return true;
+          } else {
+            // If not directed from Create Event screen, allow normal back navigation
+            return true;
+          }
+        },
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: const PreferredSize(
+              preferredSize: Size.fromHeight(kToolbarHeight),
+              child: CustomAppbar()),
+          body: Scrollbar(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    CustomCard(
+                        width: screenWidth,
+                        colors: const [
+                          Color.fromARGB(100, 84, 183, 255),
+                          Color.fromARGB(50, 2, 2, 2),
                         ],
-                      )),
-                  user.role == "Event Creator"
-                      ? Padding(
-                          padding: const EdgeInsets.only(right: 220.0),
-                          child: ElevatedButton(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Title1(titleName: event.eventName),
+                            Text(
+                              event.eventDescription,
+                              maxLines: 10,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  fontFamily: GoogleFonts.lato().fontFamily),
+                            ),
+                            const SizedBox(height: 30)
+                          ],
+                        )),
+                    user.role == "Event Creator"
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 220.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    PlanRoute.routeName, (route) => true);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 7, 240, 27),
+                                  minimumSize: const Size(150, 40)),
+                              child: const Text(
+                                "Plan or Edit Route",
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
+                    user.role == "_admin"
+                        ? const SizedBox()
+                        : Padding(
+                            padding: const EdgeInsets.only(right: 220.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _getCurrentLocationAndShowDialog(context);
+                                setState(() {
+                                  eventID = event.id as String;
+                                  userID = user.id;
+                                  userName = user.fullname;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 255, 123, 0),
+                                  minimumSize: const Size(150, 40)),
+                              child: const Text(
+                                "Call Emergency!!!",
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                    CustomCard(
+                        width: screenWidth,
+                        height: user.role == "_admin"
+                            ? screenHeight * 0.6
+                            : screenHeight * 0.738,
+                        colors: const [
+                          Color.fromARGB(200, 111, 83, 83),
+                          Color.fromARGB(200, 19, 17, 17),
+                        ],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: user.role == "_admin"
+                              ? MainAxisAlignment.spaceEvenly
+                              : MainAxisAlignment.spaceBetween,
+                          children: [
+                            CardButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MembersListScreen(
+                                                  eventID:
+                                                      event.id as String)));
+                                },
+                                imagePath: 'assets/member.png',
+                                imageLabel: 'Members',
+                                buttonText:
+                                    "See people who have\nparticipated on the event.",
+                                colors: const [
+                                  Color.fromARGB(112, 63, 56, 37),
+                                  Color.fromARGB(110, 105, 100, 100)
+                                ]),
+                            CardButton(
+                                imagePath: 'assets/chatImage.png',
+                                imageLabel: 'Group Chat',
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => EventChat(
+                                              eventID: event.id as String)));
+                                },
+                                buttonText:
+                                    "Chat with event\nmembers and discuss ride.",
+                                colors: const [
+                                  Color.fromARGB(228, 216, 62, 62),
+                                  Color.fromARGB(178, 216, 62, 62),
+                                  Color.fromARGB(155, 44, 41, 41)
+                                ]),
+                            CardButton(
+                                imagePath: 'assets/routeImage.png',
+                                imageLabel: 'Route Details',
+                                onPressed: () {
+                                  if (route.routeName == "") {
+                                    showSnackBar(context,
+                                        "Route details are not added by event organizer yet!!");
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => RouteDetailScreen(
+                                                startpoint:
+                                                    route.startPointCoordinates,
+                                                destination: route
+                                                    .destinationPointCoordinates)));
+                                  }
+                                },
+                                buttonText: "See route details for trip.",
+                                colors: const [
+                                  Color.fromARGB(227, 58, 156, 148),
+                                  Color.fromARGB(227, 58, 156, 148),
+                                  Color.fromARGB(155, 44, 41, 41)
+                                ]),
+                            user.role == "_admin"
+                                ? const SizedBox()
+                                : CardButton(
+                                    imagePath: 'assets/emergency.png',
+                                    imageLabel: 'Emergency',
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EmergencyListScreen(
+                                                      eventID:
+                                                          event.id as String)));
+                                    },
+                                    buttonText: "See emergency Details",
+                                    colors: const [
+                                        Color.fromARGB(228, 216, 62, 62),
+                                        Color.fromARGB(178, 216, 62, 62),
+                                        Color.fromARGB(155, 44, 41, 41)
+                                      ])
+                          ],
+                        )),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    user.role == "_admin" || user.role == "Event Creator"
+                        ? const SizedBox()
+                        : CustomCard(
+                            colors: const [
+                              Color.fromARGB(172, 0, 0, 0),
+                              Color.fromARGB(146, 0, 0, 0)
+                            ],
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "If you want to provide rating and review to the event?",
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 255, 255, 255),
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 10),
+                                CustomButton(
+                                    onPressed: () {
+                                      _showRatingDialog(context);
+                                      setState(() {
+                                        eventID = event.id as String;
+                                        userID = user.id;
+                                        userName = user.fullname;
+                                      });
+                                    },
+                                    width: screenWidth * 0.5,
+                                    color:
+                                        const Color.fromARGB(255, 255, 147, 7),
+                                    buttonText: const Text(
+                                      "Click here!!",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                              ],
+                            ),
+                          ),
+                    user.role == "Event Creator" || user.role == "_admin"
+                        ? const SizedBox()
+                        : ElevatedButton(
                             onPressed: () {
-                              Navigator.pushNamedAndRemoveUntil(context,
-                                  PlanRoute.routeName, (route) => true);
+                              userService.leaveEvent(
+                                  context: context,
+                                  eventID: event.id as String,
+                                  userID: user.id);
                             },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor:
-                                    const Color.fromARGB(255, 7, 240, 27),
+                                    const Color.fromARGB(255, 246, 24, 24),
                                 minimumSize: const Size(150, 40)),
                             child: const Text(
-                              "Plan or Edit Route",
+                              "Leave Event",
                               style: TextStyle(
-                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  color: Colors.white,
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
-                        )
-                      : const SizedBox(),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 220.0),
-                    child: ElevatedButton(
+                    const SizedBox(height: 5),
+                    CustomButton(
                       onPressed: () {
-                        _getCurrentLocationAndShowDialog(context);
-                        setState(() {
-                          eventID = event.id as String;
-                          userID = user.id;
-                          userName = user.fullname;
-                        });
+                        Navigator.pop(context);
                       },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 255, 123, 0),
-                          minimumSize: const Size(150, 40)),
-                      child: const Text(
-                        "Call Emergency!!!",
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  CustomCard(
-                      width: screenWidth,
-                      height: screenHeight * 0.738,
-                      colors: const [
-                        Color.fromARGB(200, 111, 83, 83),
-                        Color.fromARGB(200, 19, 17, 17),
-                      ],
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CardButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MembersListScreen(
-                                            eventID: event.id as String)));
-                              },
-                              imagePath: 'assets/member.png',
-                              imageLabel: 'Members',
-                              buttonText:
-                                  "See people who have\nparticipated on the event.",
-                              colors: const [
-                                Color.fromARGB(112, 63, 56, 37),
-                                Color.fromARGB(110, 105, 100, 100)
-                              ]),
-                          CardButton(
-                              imagePath: 'assets/chatImage.png',
-                              imageLabel: 'Group Chat',
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => EventChat(
-                                            eventID: event.id as String)));
-                              },
-                              buttonText:
-                                  "Chat with event\nmembers and discuss ride.",
-                              colors: const [
-                                Color.fromARGB(228, 216, 62, 62),
-                                Color.fromARGB(178, 216, 62, 62),
-                                Color.fromARGB(155, 44, 41, 41)
-                              ]),
-                          CardButton(
-                              imagePath: 'assets/routeImage.png',
-                              imageLabel: 'Route Details',
-                              onPressed: () {
-                                if (route.routeName == "") {
-                                  showSnackBar(context,
-                                      "Route details are not added by event organizer yet!!");
-                                } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => RouteDetailScreen(
-                                              startpoint:
-                                                  route.startPointCoordinates,
-                                              destination: route
-                                                  .destinationPointCoordinates)));
-                                }
-                              },
-                              buttonText: "See route details for trip.",
-                              colors: const [
-                                Color.fromARGB(227, 58, 156, 148),
-                                Color.fromARGB(227, 58, 156, 148),
-                                Color.fromARGB(155, 44, 41, 41)
-                              ]),
-                          CardButton(
-                              imagePath: 'assets/emergency.png',
-                              imageLabel: 'Emergency',
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            EmergencyListScreen(
-                                                eventID: event.id as String)));
-                              },
-                              buttonText: "See emergency Details",
-                              colors: const [
-                                Color.fromARGB(228, 216, 62, 62),
-                                Color.fromARGB(178, 216, 62, 62),
-                                Color.fromARGB(155, 44, 41, 41)
-                              ])
-                        ],
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  CustomCard(
-                    colors: const [
-                      Color.fromARGB(172, 0, 0, 0),
-                      Color.fromARGB(146, 0, 0, 0)
-                    ],
-                    child: Column(
-                      children: [
-                        const Text(
-                          "If you want to provide rating and review to the event?",
+                      width: 250,
+                      height: 40,
+                      color: const Color.fromARGB(255, 135, 150, 0),
+                      buttonText: Text("Back",
                           style: TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 10),
-                        CustomButton(
-                            onPressed: () {
-                              _showRatingDialog(context);
-                              setState(() {
-                                eventID = event.id as String;
-                                userID = user.id;
-                                userName = user.fullname;
-                              });
-                            },
-                            width: screenWidth * 0.5,
-                            color: const Color.fromARGB(255, 255, 147, 7),
-                            buttonText: const Text(
-                              "Click here!!",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                  fontWeight: FontWeight.bold),
-                            )),
-                      ],
+                              color: Colors.white,
+                              fontFamily: GoogleFonts.cabin().fontFamily,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold)),
                     ),
-                  ),
-                  user.role == "Event Creator"
-                      ? const SizedBox()
-                      : ElevatedButton(
-                          onPressed: () {
-                            userService.leaveEvent(
-                                context: context,
-                                eventID: event.id as String,
-                                userID: user.id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 246, 24, 24),
-                              minimumSize: const Size(150, 40)),
-                          child: const Text(
-                            "Leave Event",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                  const SizedBox(height: 5),
-                  CustomButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    width: 250,
-                    height: 40,
-                    color: const Color.fromARGB(255, 135, 150, 0),
-                    buttonText: Text("Back",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: GoogleFonts.cabin().fontFamily,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
+          drawer: const CustomDrawer(),
         ),
-        drawer: const CustomDrawer(),
       ),
     );
   }

@@ -77,7 +77,7 @@ class _EventChatState extends State<EventChat> {
   void sendMsg(String msg, String senderName) {
     Message ownMsg = Message(
         message: msg,
-        senderName: senderName,
+        senderName: senderName + (userID.substring(11, 17)),
         senderID: userID,
         time: DateFormat('HH:mm').format(DateTime.now()));
     messages!.add(ownMsg);
@@ -87,7 +87,7 @@ class _EventChatState extends State<EventChat> {
 
     socket.emit('sendMsg', {
       'msg': msg,
-      'senderName': senderName,
+      'senderName': senderName + (userID.substring(11, 17)),
       'userID': userID,
       'eventId': widget.eventID,
       'time': DateFormat('HH:mm').format(DateTime.now())
@@ -121,26 +121,36 @@ class _EventChatState extends State<EventChat> {
             child: CustomAppbar()),
         body: Column(
           children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: messages!.length,
-                itemBuilder: (context, index) {
-                  if (messages![index].senderID == user.id) {
-                    return OwnMsgWidget(
-                      message: messages![index].message,
-                      sendername: messages![index].senderName,
-                      time: DateFormat('HH:mm').format(DateTime.now()),
-                    );
-                  } else {
-                    return OtherMsgWidget(
-                      message: messages![index].message,
-                      sendername: messages![index].senderName,
-                      time: DateFormat('HH:mm').format(DateTime.now()),
-                    );
-                  }
-                },
-              ),
-            ),
+            messages == null || messages!.isEmpty
+                ? const Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 300.0),
+                      child: Text(
+                        "No Messages yet!!",
+                        style: TextStyle(color: Colors.white54),
+                      ),
+                    ),
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: messages!.length,
+                      itemBuilder: (context, index) {
+                        if (messages![index].senderID == user.id) {
+                          return OwnMsgWidget(
+                            message: messages![index].message,
+                            sendername: messages![index].senderName,
+                            time: DateFormat('HH:mm').format(DateTime.now()),
+                          );
+                        } else {
+                          return OtherMsgWidget(
+                            message: messages![index].message,
+                            sendername: messages![index].senderName,
+                            time: DateFormat('HH:mm').format(DateTime.now()),
+                          );
+                        }
+                      },
+                    ),
+                  ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
               child: Row(

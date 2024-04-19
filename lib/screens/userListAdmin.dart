@@ -1,6 +1,7 @@
 import 'package:bikers_junction_app/models/emergency.dart';
+import 'package:bikers_junction_app/models/user.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
-import 'package:bikers_junction_app/services/admin_Service.dart';
+import 'package:bikers_junction_app/services/admin_service.dart';
 import 'package:bikers_junction_app/services/event_service.dart';
 import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:bikers_junction_app/widgets/Appbar.dart';
@@ -12,17 +13,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class EmergencyListScreen extends StatefulWidget {
-  static const String routeName = "/eventEmergencies";
-  final String? eventID;
-  const EmergencyListScreen({super.key, this.eventID});
+class UserListScreen extends StatefulWidget {
+  static const String routeName = "/systemUsers";
+
+  const UserListScreen({super.key});
 
   @override
-  State<EmergencyListScreen> createState() => _EmergencyListScreenState();
+  State<UserListScreen> createState() => _UserListScreenState();
 }
 
-class _EmergencyListScreenState extends State<EmergencyListScreen> {
-  List<Emergency>? emergencies;
+class _UserListScreenState extends State<UserListScreen> {
+  List<User>? users;
   final UserService userService = UserService();
   final EventService eventService = EventService();
   final AdminService adminService = AdminService();
@@ -30,25 +31,18 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
   @override
   void initState() {
     super.initState();
-    getEmergency();
+    getAllUsers();
   }
 
-  getEmergency() async {
-    if (Provider.of<UserProvider>(context, listen: false).user.role ==
-        "_admin") {
-      emergencies = await adminService.getAllEmergencies(context);
-      setState(() {});
-    } else {
-      emergencies =
-          await eventService.getEmergency(context, widget.eventID as String);
-      setState(() {});
-    }
+  getAllUsers() async {
+    users = await adminService.getUsers(context);
+    setState(() {});
   }
 
-  void dismissEmergency(String emergencyId) {
-    userService.dismissEmergency(context: context, emergencyID: emergencyId);
+  void deleteUser(String userID) {
+    adminService.deleteUser(context: context, userID: userID);
     setState(() {
-      emergencies!.removeWhere((emergency) => emergency.id == emergencyId);
+      users!.removeWhere((user) => user.id == userID);
     });
   }
 
@@ -57,7 +51,6 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
     final user = Provider.of<UserProvider>(context).user;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final double aspRatio = user.role == "Event Creator" ? 2.4 : 2.4;
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
@@ -78,9 +71,9 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Title1(titleName: "Event Emergencies"),
+                const Title1(titleName: "System Users"),
                 Text(
-                  "Here are the list of emergencies initiated in the event",
+                  "Here is the list of users in the system",
                   maxLines: 10,
                   style: TextStyle(
                       color: Colors.white,
@@ -89,12 +82,12 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
                       fontFamily: GoogleFonts.lato().fontFamily),
                 ),
                 const SizedBox(height: 10),
-                emergencies == null || emergencies!.isEmpty
+                users == null || users!.isEmpty
                     ? const Padding(
                         padding: EdgeInsets.only(top: 300.0),
                         child: Center(
                             child: Text(
-                          "No emergencies initiated!!",
+                          "No users in the system!!",
                           style: TextStyle(color: Colors.white54),
                         )),
                       )
@@ -104,18 +97,17 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10.0))),
                         child: GridView.builder(
-                            itemCount: emergencies!.length,
+                            itemCount: users!.length,
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 1,
-                                    childAspectRatio: aspRatio),
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 1, childAspectRatio: 2.0),
                             itemBuilder: (context, index) {
-                              final emergencyData = emergencies![index];
+                              final userData = users![index];
                               return CustomCard(
                                 width: screenWidth,
                                 height: 50,
                                 colors: const [
-                                  Color.fromARGB(97, 191, 255, 40),
+                                  Color.fromARGB(96, 40, 255, 165),
                                   Color.fromARGB(108, 86, 107, 61),
                                 ],
                                 child: Column(
@@ -123,21 +115,24 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
                                   children: [
                                     Title1(
                                       titleName:
-                                          "ID: ${emergencyData.id?.substring(0, 10)}",
+                                          "ID: ${userData.id.substring(0, 7)}",
+                                      fontSize: 16,
+                                    ),
+                                    Title1(
+                                      titleName: "Name: ${userData.fullname}  ",
+                                      fontSize: 16,
+                                    ),
+                                    Title1(
+                                      titleName: "Email: ${userData.email} ",
+                                      fontSize: 16,
+                                    ),
+                                    Title1(
+                                      titleName: "Role: ${userData.role} ",
                                       fontSize: 16,
                                     ),
                                     Title1(
                                       titleName:
-                                          "Initiator : ${emergencyData.userName} ",
-                                      fontSize: 16,
-                                    ),
-                                    Title1(
-                                      titleName:
-                                          "Initiator ID: ${emergencyData.userID.substring(0, 10)} ",
-                                      fontSize: 16,
-                                    ),
-                                    Title1(
-                                      titleName: "Time: ${emergencyData.time} ",
+                                          "DOB: ${userData.dateOfBirth} A.D. ",
                                       fontSize: 16,
                                     ),
                                     const SizedBox(
@@ -148,37 +143,16 @@ class _EmergencyListScreenState extends State<EmergencyListScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         CustomButton(
-                                          width: 200,
-                                          buttonText: const Text(
-                                              "See Emergency Details",
+                                          width: 150,
+                                          buttonText: const Text("Delete User",
                                               style: TextStyle(
                                                   color: Colors.white)),
                                           color: const Color.fromARGB(
-                                              209, 1, 255, 35),
+                                              209, 255, 39, 1),
                                           onPressed: () {
-                                            eventService.getemergencyDetails(
-                                                context: context,
-                                                emergencyID:
-                                                    emergencyData.id as String);
+                                            deleteUser(userData.id);
                                           },
                                         ),
-                                        user.role == "Event Creator" ||
-                                                user.role == "_admin"
-                                            ? CustomButton(
-                                                buttonText: Text(
-                                                    user.role == "_admin"
-                                                        ? "Delete"
-                                                        : "Dismiss",
-                                                    style: const TextStyle(
-                                                        color: Colors.white)),
-                                                color: const Color.fromARGB(
-                                                    115, 255, 1, 1),
-                                                onPressed: () {
-                                                  dismissEmergency(emergencyData
-                                                      .id as String);
-                                                },
-                                              )
-                                            : const SizedBox()
                                       ],
                                     )
                                   ],

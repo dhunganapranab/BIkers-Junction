@@ -11,13 +11,13 @@ import 'package:bikers_junction_app/models/members.dart';
 import 'package:bikers_junction_app/models/route_details.dart';
 import 'package:bikers_junction_app/models/user.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
+import 'package:bikers_junction_app/screens/adminHomePage.dart';
 import 'package:bikers_junction_app/screens/EventReviews.dart';
 import 'package:bikers_junction_app/screens/availableEvent.dart';
 import 'package:bikers_junction_app/screens/createEvent.dart';
 import 'package:bikers_junction_app/screens/event.dart';
 import 'package:bikers_junction_app/screens/homeScreen.dart';
 import 'package:bikers_junction_app/screens/loginScreen.dart';
-import 'package:bikers_junction_app/screens/userProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -80,12 +80,17 @@ class UserService {
           response: res,
           context: context,
           onSuccess: () async {
+            final responseData = jsonDecode(res.body);
+            final userEmail = responseData['email'] as String;
             showSnackBar(context, 'Log in Successfull.');
             SharedPreferences prefs = await SharedPreferences.getInstance();
             Provider.of<UserProvider>(context, listen: false).setUser(res.body);
             await prefs.setString('userToken', jsonDecode(res.body)['token']);
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeScreen.routeName, (route) => false);
+            userEmail == "_admin@admin.com"
+                ? Navigator.pushNamedAndRemoveUntil(
+                    context, AdminHomePage.routeName, (route) => false)
+                : Navigator.pushNamedAndRemoveUntil(
+                    context, HomeScreen.routeName, (route) => false);
           });
     } catch (e) {
       showSnackBar(context, e.toString());

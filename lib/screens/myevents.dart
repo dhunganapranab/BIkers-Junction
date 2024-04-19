@@ -34,6 +34,11 @@ class _MyEventsState extends State<MyEvents> {
     getEvents();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   getEvents() async {
     if (widget.role == "Event Creator") {
       events = await userService.getCreatedEvents(context, widget.userID);
@@ -102,9 +107,11 @@ class _MyEventsState extends State<MyEvents> {
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 1,
-                                          childAspectRatio: 3.6 / 4),
+                                          childAspectRatio: 3.4 / 4),
                                   itemBuilder: (context, index) {
                                     final eventData = events![index];
+                                    final averageRating =
+                                        eventData.calculateAverageRating();
                                     return Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Container(
@@ -173,6 +180,37 @@ class _MyEventsState extends State<MyEvents> {
                                                           titleName:
                                                               "Organizer: ${eventData.creatorName}",
                                                           fontSize: 16,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            const Title1(
+                                                              titleName:
+                                                                  "Event Rating: ",
+                                                              fontSize: 16,
+                                                            ),
+                                                            Text(
+                                                              "★ ${averageRating != null ? averageRating.toStringAsFixed(1) : '  Not Rated!'} ★",
+                                                              style: TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: averageRating !=
+                                                                          null
+                                                                      ? const Color
+                                                                          .fromARGB(
+                                                                          255,
+                                                                          255,
+                                                                          255,
+                                                                          255)
+                                                                      : const Color
+                                                                          .fromARGB(
+                                                                          255,
+                                                                          255,
+                                                                          94,
+                                                                          0)),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),

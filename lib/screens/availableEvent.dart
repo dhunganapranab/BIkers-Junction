@@ -1,5 +1,8 @@
 import 'package:bikers_junction_app/models/event.dart';
+import 'package:bikers_junction_app/providers/user_provider.dart';
+import 'package:bikers_junction_app/screens/adminHomePage.dart';
 import 'package:bikers_junction_app/screens/homeScreen.dart';
+import 'package:bikers_junction_app/services/admin_Service.dart';
 import 'package:bikers_junction_app/services/event_service.dart';
 import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:bikers_junction_app/widgets/Appbar.dart';
@@ -9,6 +12,7 @@ import 'package:bikers_junction_app/widgets/Textfield.dart';
 import 'package:bikers_junction_app/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class AvailableEvents extends StatefulWidget {
   const AvailableEvents({super.key});
@@ -22,6 +26,7 @@ class _AvailableEventsState extends State<AvailableEvents> {
   List<Event>? events;
   final EventService eventService = EventService();
   final UserService userService = UserService();
+  final AdminService adminService = AdminService();
   String eventID = '';
   @override
   void initState() {
@@ -35,11 +40,24 @@ class _AvailableEventsState extends State<AvailableEvents> {
   }
 
   void getEventData() {
-    eventService.geteventDetails(context: context, eventID: eventID);
+    if (Provider.of<UserProvider>(context, listen: false).user.role ==
+        "_admin") {
+      eventService.getmyeventDetails(context: context, eventID: eventID);
+    } else {
+      eventService.geteventDetails(context: context, eventID: eventID);
+    }
+  }
+
+  void deleteEvent(String eventID) {
+    adminService.deleteEvent(context: context, eventID: eventID);
+    setState(() {
+      events!.removeWhere((event) => event.id == eventID);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 24, 22, 22),
       appBar: const PreferredSize(
@@ -80,9 +98,11 @@ class _AvailableEventsState extends State<AvailableEvents> {
                               shrinkWrap: true,
                               physics: const ClampingScrollPhysics(),
                               gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                  SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 1,
-                                      childAspectRatio: 3.3 / 4),
+                                      childAspectRatio: user.role == "_admin"
+                                          ? 3.1 / 4
+                                          : 3.3 / 4),
                               itemBuilder: (context, index) {
                                 final eventData = events![index];
                                 final averageRating =
@@ -193,8 +213,12 @@ class _AvailableEventsState extends State<AvailableEvents> {
                                         ),
                                         Padding(
                                             padding: const EdgeInsets.only(
-                                                top: 10, right: 200.0),
-                                            child: CustomButton1(
+                                                top: 10,
+                                                right: 200.0,
+                                                bottom: 10),
+                                            child: CustomButton(
+                                                width: 150,
+                                                height: 35,
                                                 color: const Color.fromARGB(
                                                     255, 1, 255, 35),
                                                 onPressed: () {
@@ -213,6 +237,32 @@ class _AvailableEventsState extends State<AvailableEvents> {
                                                         fontSize: 18,
                                                         fontWeight:
                                                             FontWeight.bold)))),
+                                        user.role == "_admin"
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 200.0),
+                                                child: CustomButton(
+                                                    width: 150,
+                                                    height: 35,
+                                                    color: const Color.fromARGB(
+                                                        153, 255, 1, 1),
+                                                    onPressed: () {
+                                                      deleteEvent(eventData.id
+                                                          as String);
+                                                    },
+                                                    buttonText: Text(
+                                                        "Delete Event",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontFamily:
+                                                                GoogleFonts
+                                                                        .cabin()
+                                                                    .fontFamily,
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold))))
+                                            : const SizedBox(),
                                       ],
                                     ),
                                   ),
@@ -224,8 +274,11 @@ class _AvailableEventsState extends State<AvailableEvents> {
               const SizedBox(height: 25),
               CustomButton(
                 onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, HomeScreen.routeName, (route) => false);
+                  user.role == "_admin"
+                      ? Navigator.pushNamedAndRemoveUntil(
+                          context, AdminHomePage.routeName, (route) => false)
+                      : Navigator.pushNamedAndRemoveUntil(
+                          context, HomeScreen.routeName, (route) => false);
                 },
                 width: 300,
                 height: 40,

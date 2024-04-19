@@ -199,7 +199,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                     backgroundColor: Color.fromARGB(230, 61, 245, 70),
                     onPressed: () async {
                       await launchUrl(Uri.parse(
-                          'google.navigation:q=$lat1,$lat2&key=$googleApiKey'));
+                          'google.navigation:q=$lat3,$lat4&key=$googleApiKey'));
                     },
                     child: const Icon(
                       Icons.navigation_outlined,
@@ -292,7 +292,9 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                                 color: const Color.fromARGB(160, 224, 25, 25),
                                 width: screenWidth * 0.4,
                                 height: 35,
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
                                 buttonText: const Text(
                                   "Back",
                                   style: TextStyle(

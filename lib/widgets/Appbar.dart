@@ -1,6 +1,8 @@
+import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:bikers_junction_app/widgets/Buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CustomAppbar extends StatelessWidget {
   const CustomAppbar({
@@ -24,6 +26,7 @@ class CustomAppbar extends StatelessWidget {
             child: CustomButton(
                 onPressed: () {
                   userService.logOut(context);
+                  Provider.of<UserProvider>(context, listen: false).clearUser();
                 },
                 buttonText: const Text(
                   "logout",

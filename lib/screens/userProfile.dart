@@ -91,6 +91,7 @@ class _UserProfileState extends State<UserProfile> {
                         const SizedBox(height: 10),
                         CustomTextField(
                           controller: name,
+                          readonly: user.role == "_admin" ? true : false,
                           hintText: " Enter your full name..",
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -110,6 +111,7 @@ class _UserProfileState extends State<UserProfile> {
                         const SizedBox(height: 10),
                         CustomTextField(
                           controller: email,
+                          readonly: user.role == "_admin" ? true : false,
                           hintText: " Enter your Email..",
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -130,6 +132,7 @@ class _UserProfileState extends State<UserProfile> {
                         CustomTextField(
                           width: 150,
                           controller: birthYear,
+                          readonly: user.role == "_admin" ? true : false,
                           maxLength: 4,
                           keyboardType: TextInputType.number,
                           hintText: " Birth year (AD)",
@@ -140,22 +143,24 @@ class _UserProfileState extends State<UserProfile> {
                             return null;
                           },
                         ),
-                        CustomButton1(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                userService.updateProfile(
-                                    context: context,
-                                    userID: user.id,
-                                    name: name.text,
-                                    email: email.text,
-                                    dob: birthYear.text);
-                              }
-                            },
-                            buttonText: const Title1(
-                                titleName: "Update Profile",
-                                fontSize: 17,
-                                color: Colors.white),
-                            color: const Color.fromARGB(178, 0, 255, 8)),
+                        user.role == "_admin"
+                            ? const SizedBox()
+                            : CustomButton1(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    userService.updateProfile(
+                                        context: context,
+                                        userID: user.id,
+                                        name: name.text,
+                                        email: email.text,
+                                        dob: birthYear.text);
+                                  }
+                                },
+                                buttonText: const Title1(
+                                    titleName: "Update Profile",
+                                    fontSize: 17,
+                                    color: Colors.white),
+                                color: const Color.fromARGB(178, 0, 255, 8)),
                         CustomButton1(
                             onPressed: () {
                               Navigator.pushNamedAndRemoveUntil(context,

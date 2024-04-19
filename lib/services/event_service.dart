@@ -15,7 +15,7 @@ import 'package:bikers_junction_app/providers/event_provider.dart';
 import 'package:bikers_junction_app/providers/route_provider.dart';
 import 'package:bikers_junction_app/screens/event.dart';
 import 'package:bikers_junction_app/screens/eventDetails.dart';
-import 'package:bikers_junction_app/screens/initiateEmergency.dart';
+import 'package:bikers_junction_app/screens/EmergencyDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -55,8 +55,12 @@ class EventService {
             showSnackBar(context, 'Event registered successfully.');
             Provider.of<EventProvider>(context, listen: false)
                 .setEvent(res.body);
-            Navigator.pushNamedAndRemoveUntil(
-                context, MainEvent.routeName, (route) => false);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const MainEvent(
+                          directedFromCreateEvent: true,
+                        )));
           });
     } catch (e) {
       showSnackBar(context, e.toString());
