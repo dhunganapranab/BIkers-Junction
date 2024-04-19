@@ -26,7 +26,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
       setState(() {
         _pickedFile = pickedFile;
       });
-      print(pickedFile.);
     }
   }
 
