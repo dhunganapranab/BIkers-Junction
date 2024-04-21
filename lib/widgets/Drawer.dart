@@ -26,6 +26,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
       setState(() {
         _pickedFile = pickedFile;
       });
+      print("Picked file: $pickedFile");
     }
   }
 
@@ -48,23 +49,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
           const SizedBox(height: 20),
           Stack(
             children: [
-              InkWell(
-                onTap: _pickFile,
-                child: Container(
-                  width: 130,
-                  height: 130,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                    image: _pickedFile != null
-                        ? DecorationImage(
-                            image: FileImage(_pickedFile!),
-                            fit: BoxFit.cover,
-                          )
-                        : const DecorationImage(
-                            image: AssetImage('assets/account.png'),
-                            fit: BoxFit.cover,
-                          ),
-                  ),
+              Container(
+                width: 130,
+                height: 130,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  image: _pickedFile != null
+                      ? DecorationImage(
+                          image: FileImage(_pickedFile!),
+                          fit: BoxFit.cover,
+                        )
+                      : const DecorationImage(
+                          image: AssetImage('assets/account.png'),
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
               Positioned(
@@ -72,7 +70,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 right: 0,
                 child: IconButton(
                   icon: Icon(Icons.add_a_photo_sharp),
-                  onPressed: _pickFile,
+                  onPressed: () {
+                    pickFile(context);
+                  },
                   highlightColor: Color.fromARGB(255, 248, 254, 255),
                   iconSize: 32,
                 ),

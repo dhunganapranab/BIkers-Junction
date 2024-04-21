@@ -33,31 +33,6 @@ class _SendResetPasswordEmailScreenState
           body: SingleChildScrollView(
             child: Column(
               children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 40.0, right: 250, left: 10),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/');
-                    },
-                    child: const Center(
-                      child: Row(
-                        children: [
-                          Text("Back to home",
-                              style: TextStyle(
-                                  color: Colors.white70,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15)),
-                          SizedBox(width: 5),
-                          Icon(
-                            Icons.home,
-                            color: Colors.white70,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.only(left: 60),

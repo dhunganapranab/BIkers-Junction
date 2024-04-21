@@ -23,6 +23,7 @@ class _RegisterState extends State<Register> {
   final TextEditingController birthYear = TextEditingController();
   String? dropDownValue;
   List listItem = ['Event Creator', 'Event Participator'];
+  String? errorMessage;
 
   @override
   void dispose() {
@@ -32,6 +33,19 @@ class _RegisterState extends State<Register> {
     password.dispose();
     confirmPassword.dispose();
     birthYear.dispose();
+  }
+
+  void validateRole() {
+    if (dropDownValue == null) {
+      setState(() {
+        errorMessage = "Please select a role!";
+      });
+    } else {
+      // If a role is selected, clear error message
+      setState(() {
+        errorMessage = null;
+      });
+    }
   }
 
   void signupUser() {
@@ -58,31 +72,6 @@ class _RegisterState extends State<Register> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 40.0, right: 250, left: 10),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/');
-                    },
-                    child: const Center(
-                      child: Row(
-                        children: [
-                          Text("Back to home",
-                              style: TextStyle(
-                                  color: Colors.white70,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15)),
-                          SizedBox(width: 5),
-                          Icon(
-                            Icons.home,
-                            color: Colors.white70,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
@@ -139,10 +128,13 @@ class _RegisterState extends State<Register> {
                                                 color: Colors.lightGreen,
                                                 fontSize: 17),
                                           ),
+                                          errorStyle: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 255, 95, 84)),
                                         ),
                                         validator: (value) {
                                           if (value!.isEmpty) {
-                                            return "field cannot be empty!!!";
+                                            return "Full name is required!!!";
                                           } else if (value
                                               .startsWith(RegExp(r'[0-9]'))) {
                                             return "Name cannot starts with number.";
@@ -160,15 +152,18 @@ class _RegisterState extends State<Register> {
                                               style: TextStyle(
                                                   color: Colors.lightGreen,
                                                   fontSize: 17)),
+                                          errorStyle: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 255, 95, 84)),
                                         ),
                                         validator: (value) {
                                           if (value!.isEmpty) {
-                                            return "Field cannot be empty!!!";
+                                            return "Email is required!!!";
                                           }
                                           if (!RegExp(
                                                   r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                                               .hasMatch(value)) {
-                                            return "Please enter a valid email";
+                                            return "Please enter a valid email!!.";
                                           }
                                           return null;
                                         },
@@ -184,6 +179,9 @@ class _RegisterState extends State<Register> {
                                                 style: TextStyle(
                                                     color: Colors.lightGreen,
                                                     fontSize: 17)),
+                                            errorStyle: const TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 255, 95, 84)),
                                             suffixIcon: IconButton(
                                                 onPressed: () {
                                                   setState(() {
@@ -199,7 +197,10 @@ class _RegisterState extends State<Register> {
                                                     size: 20))),
                                         validator: (value) {
                                           if (value!.isEmpty) {
-                                            return "Field cannot be empty!!!";
+                                            return "Password is required!!!";
+                                          }
+                                          if (value.length < 8) {
+                                            return "Password is too short. It must be at least 8 characters";
                                           }
                                           return null;
                                         },
@@ -216,6 +217,9 @@ class _RegisterState extends State<Register> {
                                                 style: TextStyle(
                                                     color: Colors.lightGreen,
                                                     fontSize: 17)),
+                                            errorStyle: const TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 255, 95, 84)),
                                             suffixIcon: IconButton(
                                                 onPressed: () {
                                                   setState(() {
@@ -232,59 +236,83 @@ class _RegisterState extends State<Register> {
                                                 ))),
                                         validator: (value) {
                                           if (value!.isEmpty) {
-                                            return "Field cannot be empty!!!";
+                                            return "Confirm Password is required!!!";
+                                          }
+                                          if (value.length < 8) {
+                                            return "Password is too short. It must be at least 8 characters";
                                           }
                                           if (password.text != value) {
-                                            return "password and confirm-password don't match";
+                                            return "password and confirm-password don't match!!";
                                           }
                                           return null;
                                         },
                                       ),
                                       const SizedBox(height: 10),
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text("Role:",
-                                              style: TextStyle(
-                                                  color: Colors.lightGreen,
-                                                  fontSize: 17)),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 100.0),
-                                            child: DropdownButton(
-                                              dropdownColor:
-                                                  const Color.fromARGB(
-                                                      255, 60, 68, 51),
-                                              style: const TextStyle(
-                                                  color: Colors.lightGreen,
-                                                  fontSize: 17),
-                                              hint: const Text(
-                                                "Select your role",
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text("Role:",
                                                 style: TextStyle(
                                                     color: Colors.lightGreen,
-                                                    fontSize: 17),
+                                                    fontSize: 17)),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 100.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  DropdownButton(
+                                                    dropdownColor:
+                                                        const Color.fromARGB(
+                                                            255, 60, 68, 51),
+                                                    style: const TextStyle(
+                                                        color:
+                                                            Colors.lightGreen,
+                                                        fontSize: 17),
+                                                    hint: const Text(
+                                                      "Select your role",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.lightGreen,
+                                                          fontSize: 17),
+                                                    ),
+                                                    value: dropDownValue,
+                                                    onChanged: (newValue) {
+                                                      setState(() {
+                                                        dropDownValue =
+                                                            newValue.toString();
+                                                        // Reset error message when user selects a role
+                                                        errorMessage = null;
+                                                      });
+                                                    },
+                                                    items: listItem
+                                                        .map((listItem) {
+                                                      return DropdownMenuItem(
+                                                        value: listItem,
+                                                        child: Text(listItem),
+                                                      );
+                                                    }).toList(),
+                                                    icon: const Icon(
+                                                        Icons.arrow_drop_down,
+                                                        color: Colors.white),
+                                                  ),
+                                                  // Error message
+                                                  if (errorMessage != null)
+                                                    Text(
+                                                      errorMessage!,
+                                                      style: const TextStyle(
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              255,
+                                                              95,
+                                                              84)),
+                                                    ),
+                                                ],
                                               ),
-                                              value: dropDownValue,
-                                              onChanged: (newValue) {
-                                                setState(() {
-                                                  dropDownValue =
-                                                      newValue.toString();
-                                                });
-                                              },
-                                              items: listItem.map((listItem) {
-                                                return DropdownMenuItem(
-                                                  value: listItem,
-                                                  child: Text(listItem),
-                                                );
-                                              }).toList(),
-                                              icon: const Icon(
-                                                  Icons.arrow_drop_down,
-                                                  color: Colors.white),
                                             ),
-                                          ),
-                                        ],
-                                      ),
+                                          ]),
                                       const SizedBox(height: 10),
                                       Padding(
                                         padding:
@@ -303,10 +331,13 @@ class _RegisterState extends State<Register> {
                                                         color:
                                                             Colors.lightGreen,
                                                         fontSize: 17)),
+                                                errorStyle: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        255, 255, 95, 84)),
                                                 counterText: ""),
                                             validator: (value) {
                                               if (value!.isEmpty) {
-                                                return "Field cannot be empty!!!";
+                                                return "BirthYear is required!!!";
                                               }
                                               return null;
                                             },
@@ -323,6 +354,11 @@ class _RegisterState extends State<Register> {
                                               onTap: () {
                                                 if (_formKey.currentState!
                                                     .validate()) {
+                                                  validateRole();
+                                                }
+                                                if (dropDownValue != null &&
+                                                    _formKey.currentState!
+                                                        .validate()) {
                                                   signupUser();
                                                 }
                                               },

@@ -1,6 +1,7 @@
 import 'package:bikers_junction_app/models/event.dart';
 import 'package:bikers_junction_app/providers/user_provider.dart';
 import 'package:bikers_junction_app/screens/event.dart';
+import 'package:bikers_junction_app/services/admin_service.dart';
 import 'package:bikers_junction_app/services/event_service.dart';
 import 'package:bikers_junction_app/services/user_service.dart';
 import 'package:bikers_junction_app/widgets/Appbar.dart';
@@ -26,6 +27,7 @@ class _MyEventsState extends State<MyEvents> {
   List<Event>? events;
   final EventService eventService = EventService();
   final UserService userService = UserService();
+  final AdminService adminService = AdminService();
   String eventID = "";
 
   @override
@@ -51,6 +53,13 @@ class _MyEventsState extends State<MyEvents> {
 
   void getEventData() {
     eventService.getmyeventDetails(context: context, eventID: eventID);
+  }
+
+  void deleteEvent(String eventID) {
+    adminService.deleteEvent(context: context, eventID: eventID);
+    setState(() {
+      events!.removeWhere((event) => event.id == eventID);
+    });
   }
 
   @override
@@ -105,9 +114,12 @@ class _MyEventsState extends State<MyEvents> {
                                   shrinkWrap: true,
                                   physics: const ClampingScrollPhysics(),
                                   gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                      SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 1,
-                                          childAspectRatio: 3.4 / 4),
+                                          childAspectRatio:
+                                              widget.role == "Event Creator"
+                                                  ? 3.1 / 4
+                                                  : 3.3 / 4),
                                   itemBuilder: (context, index) {
                                     final eventData = events![index];
                                     final averageRating =
@@ -241,6 +253,30 @@ class _MyEventsState extends State<MyEvents> {
                                                             fontWeight:
                                                                 FontWeight
                                                                     .bold)))),
+                                            Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 200.0),
+                                                child: CustomButton(
+                                                    width: 150,
+                                                    height: 35,
+                                                    color: const Color.fromARGB(
+                                                        153, 255, 1, 1),
+                                                    onPressed: () {
+                                                      deleteEvent(eventData.id
+                                                          as String);
+                                                    },
+                                                    buttonText: Text(
+                                                        "Delete Event",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontFamily:
+                                                                GoogleFonts
+                                                                        .cabin()
+                                                                    .fontFamily,
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold))))
                                           ],
                                         ),
                                       ),

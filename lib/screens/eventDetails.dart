@@ -79,195 +79,192 @@ class _EventDetailsState extends State<EventDetails> {
             preferredSize: Size.fromHeight(kToolbarHeight),
             child: CustomAppbar()),
         body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    height: screenHeight * 0.69,
-                    child: Card(
-                      color: const Color.fromARGB(106, 184, 95, 95),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Title1(titleName: " Event Details"),
-                            const SizedBox(height: 10),
-                            CustomCard(
-                                width: 400,
-                                colors: const [
-                                  Color.fromARGB(100, 84, 183, 255),
-                                  Color.fromARGB(50, 2, 2, 2),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: screenHeight * 0.71,
+                  child: Card(
+                    color: const Color.fromARGB(106, 184, 95, 95),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Title1(titleName: " Event Details"),
+                          const SizedBox(height: 10),
+                          CustomCard(
+                              width: 400,
+                              colors: const [
+                                Color.fromARGB(100, 84, 183, 255),
+                                Color.fromARGB(50, 2, 2, 2),
+                              ],
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Title1(titleName: event.eventName),
+                                  Text(
+                                    event.eventDescription,
+                                    maxLines: 10,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        fontFamily:
+                                            GoogleFonts.lato().fontFamily),
+                                  ),
+                                  const SizedBox(height: 30)
                                 ],
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              )),
+                          CustomCard(
+                              colors: const [
+                                Color.fromARGB(200, 111, 83, 83),
+                                Color.fromARGB(200, 19, 17, 17),
+                              ],
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Title1(titleName: "Pre-requisites"),
+                                  Text(
+                                    event.prerequisites,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        fontFamily:
+                                            GoogleFonts.lato().fontFamily),
+                                  ),
+                                  const SizedBox(height: 30)
+                                ],
+                              )),
+                          CustomCard(
+                              colors: const [
+                                Color.fromARGB(255, 154, 241, 91),
+                                Color.fromARGB(144, 114, 103, 0),
+                              ],
+                              child: Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Title1(titleName: event.eventName),
+                                    const Title1(
+                                        titleName: "Allowed Participants: ",
+                                        fontSize: 20),
                                     Text(
-                                      event.eventDescription,
-                                      maxLines: 10,
+                                      event.allowedParticipants,
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 18,
+                                          fontSize: 20,
                                           fontFamily:
                                               GoogleFonts.lato().fontFamily),
                                     ),
-                                    const SizedBox(height: 30)
                                   ],
-                                )),
-                            CustomCard(
-                                colors: const [
-                                  Color.fromARGB(200, 111, 83, 83),
-                                  Color.fromARGB(200, 19, 17, 17),
-                                ],
+                                ),
+                              )),
+                          CustomCard(
+                              colors: const [
+                                Color.fromARGB(255, 28, 124, 235),
+                                Color.fromARGB(144, 187, 186, 174),
+                              ],
+                              child: Padding(
+                                padding: const EdgeInsets.all(15.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Title1(titleName: "Pre-requisites"),
-                                    Text(
-                                      event.prerequisites,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                          fontFamily:
-                                              GoogleFonts.lato().fontFamily),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Title1(
+                                            titleName: "Organizer: ",
+                                            fontSize: 20),
+                                        Text(
+                                          event.creatorName,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                              fontFamily: GoogleFonts.lato()
+                                                  .fontFamily),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 30)
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Title1(
+                                            titleName: "Event Happeing On: ",
+                                            fontSize: 20),
+                                        Text(
+                                          event.eventDate.substring(0, 10),
+                                          maxLines: 10,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                              fontFamily: GoogleFonts.lato()
+                                                  .fontFamily),
+                                        ),
+                                      ],
+                                    ),
                                   ],
-                                )),
-                            CustomCard(
-                                colors: const [
-                                  Color.fromARGB(255, 154, 241, 91),
-                                  Color.fromARGB(144, 114, 103, 0),
-                                ],
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Title1(
-                                          titleName: "Allowed Participants: ",
-                                          fontSize: 20),
-                                      Text(
-                                        event.allowedParticipants,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                            fontFamily:
-                                                GoogleFonts.lato().fontFamily),
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                            CustomCard(
-                                colors: const [
-                                  Color.fromARGB(255, 28, 124, 235),
-                                  Color.fromARGB(144, 187, 186, 174),
-                                ],
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const Title1(
-                                              titleName: "Organizer: ",
-                                              fontSize: 20),
-                                          Text(
-                                            event.creatorName,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                                fontFamily: GoogleFonts.lato()
-                                                    .fontFamily),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const Title1(
-                                              titleName: "Event Happeing On: ",
-                                              fontSize: 20),
-                                          Text(
-                                            event.eventDate.substring(0, 10),
-                                            maxLines: 10,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                                fontFamily: GoogleFonts.lato()
-                                                    .fontFamily),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                          ],
-                        ),
+                                ),
+                              )),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 8.0, left: 50.0, right: 30.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          _showJoinEventDialog(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 246, 150, 24),
-                            minimumSize: const Size(150, 40)),
-                        child: const Text(
-                          "Join this Event",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold),
-                        ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(top: 8.0, left: 50.0, right: 30.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        _showJoinEventDialog(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 246, 150, 24),
+                          minimumSize: const Size(150, 40)),
+                      child: const Text(
+                        "Join this Event",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EventReviews(
-                                      eventID: event.id as String)));
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(190, 0, 183, 255),
-                            minimumSize: const Size(150, 40)),
-                        child: const Text(
-                          "See Reviews",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold),
-                        ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    EventReviews(eventID: event.id as String)));
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(190, 0, 183, 255),
+                          minimumSize: const Size(150, 40)),
+                      child: const Text(
+                        "See Reviews",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         drawer: const CustomDrawer(),

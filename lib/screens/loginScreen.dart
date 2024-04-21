@@ -92,16 +92,17 @@ class _LoginState extends State<Login> {
                                                 color: Colors.green,
                                                 fontSize: 17)),
                                         errorStyle: TextStyle(
-                                            color: Colors.blueGrey,
+                                            color: Color.fromARGB(
+                                                255, 255, 95, 84),
                                             fontWeight: FontWeight.bold)),
                                     validator: (value) {
                                       if (value!.isEmpty) {
-                                        return "Field cannot be empty!!!";
+                                        return "Email is required!!";
                                       }
                                       if (!RegExp(
                                               r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                                           .hasMatch(value)) {
-                                        return "Please enter a valid email";
+                                        return "Email format is not correct!!!";
                                       }
                                       return null;
                                     },
@@ -118,7 +119,8 @@ class _LoginState extends State<Login> {
                                               fontSize: 17,
                                             )),
                                         errorStyle: const TextStyle(
-                                            color: Colors.blueGrey,
+                                            color: Color.fromARGB(
+                                                255, 255, 95, 84),
                                             fontWeight: FontWeight.bold),
                                         suffixIcon: IconButton(
                                             onPressed: () {
@@ -136,7 +138,7 @@ class _LoginState extends State<Login> {
                                             ))),
                                     validator: (value) {
                                       if (value!.isEmpty) {
-                                        return "Field cannot be empty!!!";
+                                        return "Password is required!!!";
                                       }
                                       return null;
                                     },

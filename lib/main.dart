@@ -34,42 +34,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final UserService userService = UserService();
-  String? ipv4Address;
 
   @override
   void initState() {
     super.initState();
-    fetchIPv4Address();
     userService.getUserData(context);
-    print(ipv4Address);
-  }
-
-  Future<void> fetchIPv4Address() async {
-    NetworkInfo networkInfo = NetworkInfo();
-    String? ipAddress;
-
-    try {
-      ipAddress = await networkInfo.getWifiIP();
-      if (ipAddress != null) {
-        // Extract IPv4 address from the IP address
-        ipv4Address = ipAddress.split('.').firstWhere(
-              (segment) => int.tryParse(segment) != null,
-              orElse: () => "",
-            );
-      }
-    } catch (e) {
-      print('Error fetching IPv4 address: $e');
-    }
-
-    setState(() {
-      ipv4Address = ipAddress;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Bikers Junction',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
