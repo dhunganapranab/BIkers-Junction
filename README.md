@@ -1,6 +1,5 @@
 # bikers_junction_app
-
-A new Flutter project.
+This is the biker's junction application which is like a travel planner which includes features like group chat, google map integration, profiles, event management etc. I worked on this project to learn and honed my skills in flutter.
 
 ## Getting Started
 
